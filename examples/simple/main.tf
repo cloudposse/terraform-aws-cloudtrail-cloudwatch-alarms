@@ -16,6 +16,14 @@ provider "aws" {
   skip_requesting_account_id  = true
 }
 
+## This is the module being used
+module "cloudtrail_api_alarms" {
+  source         = "../../"
+  region         = "${var.region}"
+  log_group_name = "${aws_cloudwatch_log_group.default.name}"
+}
+
+## Everything after this is standard cloudtrail setup
 resource "aws_s3_bucket" "default" {
   bucket_prefix = "cw-bucket-${var.region}"
   region        = "${var.region}"
@@ -46,12 +54,6 @@ resource "aws_s3_bucket_policy" "default" {
     ]
 }
 EOF
-}
-
-module "cloudtrail_api_alarms" {
-  source         = "../../"
-  region         = "${var.region}"
-  log_group_name = "${aws_cloudwatch_log_group.default.name}"
 }
 
 resource "aws_iam_role" "cloudtrail_cloudwatch_events_role" {
