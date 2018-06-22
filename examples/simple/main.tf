@@ -18,6 +18,7 @@ provider "aws" {
 
 resource "aws_s3_bucket" "default" {
   bucket_prefix = "cw-bucket-${var.region}"
+  region        = "${var.region}"
 }
 
 resource "aws_s3_bucket_policy" "default" {
@@ -68,13 +69,13 @@ data "aws_iam_policy_document" "policy" {
   statement {
     effect    = "Allow"
     actions   = ["logs:CreateLogStream"]
-    resources = ["arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:*:log-stream:*"]
+    resources = ["${aws_cloudwatch_log_group.default.arn}:*:log-stream:*"]
   }
 
   statement {
     effect    = "Allow"
     actions   = ["logs:PutLogEvents"]
-    resources = ["arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:*:log-stream:*"]
+    resources = ["${aws_cloudwatch_log_group.default.arn}:log-stream:*"]
   }
 }
 
