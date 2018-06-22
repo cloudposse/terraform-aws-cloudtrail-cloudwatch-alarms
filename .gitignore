@@ -1,0 +1,9 @@
+*.tfstate
+*.tfstate.*
+**/*.pem
+**/.terraform
+**/terraform.tfstate
+**/terraform.tfstate.backup
+
+dev.auto.tfvars
+*.zip

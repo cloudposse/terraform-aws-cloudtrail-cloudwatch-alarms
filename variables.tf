@@ -22,8 +22,6 @@ variable "region" {
   type        = "string"
 }
 
-variable "access_denied_threshold" {
-  description = "The threshold to alert on for denied access logs for AWS."
-  type        = "string"
-  default     = "1"
+variable "log_group_name" {
+  description = "The cloudtrail cloudwatch log group name"
 }
