@@ -30,3 +30,8 @@ variable "metric_namespace" {
   description = "A namespace for grouping all of the metrics together"
   default     = "CISBenchmark"
 }
+
+variable "create_dashboard" {
+  description = "When true a dashboard that displays tha statistics as a line graph will be created in CloudWatch"
+  default     = "true"
+}

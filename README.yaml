@@ -1,0 +1,84 @@
+---
+#
+# This is the canonical configuration for the `README.md`
+# Run `make readme` to rebuild the `README.md`
+#
+
+# Name of this project
+name: terraform-aws-cloudtrail-cloudwatch-alarms
+
+# Logo for this project
+#logo: docs/logo.png
+
+# License of this project
+license: "APACHE2"
+
+# Canonical GitHub repo
+github_repo: cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms
+
+# Badges to display
+badges:
+  - name: "Build Status"
+    image: "https://travis-ci.org/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms.svg?branch=master"
+    url: "https://travis-ci.org/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms"
+  - name: "Latest Release"
+    image: "https://img.shields.io/github/release/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms.svg"
+    url: "https://github.com/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms/releases"
+  - name: "Slack Community"
+    image: "https://slack.cloudposse.com/badge.svg"
+    url: "https://slack.cloudposse.com"
+
+# related:
+#   - name: "terraform-aws-ssm-parameter-store"
+#     description: "AWS SSM Parameter Store module"
+#     url: "https://github.com/cloudposse/terraform-aws-ssm-parameter-store"
+#   - name: "terraform-aws-kms-key"
+#     description: "KMS Key module"
+#     url: "https://github.com/cloudposse/terraform-aws-kms-key"
+
+
+# Short description of this project
+description: |-
+  Terraform module for creating alarms for tracking important changes and occurances from cloudtrail.
+  This module creates a set of filter metrics and alarms based on the security best practices covered in the AWS guide [AWS_CIS_Foundations_Benchmark](https://d0.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf).
+  
+# How to use this project
+usage: |-
+  ```hcl
+  module "cloudtrail_api_alarms" {
+    source         = "git::https://github.com/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms.git"
+    region         = "${var.region}"
+    log_group_name = "${aws_cloudwatch_log_group.default.name}"
+  }
+  ```
+  For detailed usage which includes setting up cloudtrail, cloudwatch logs, roles, policies, and the s3 bucket - as well as using this module see the [example directory](./examples/simple)
+
+
+# Example usage
+#examples: |-
+#  Example goes here...
+
+# How to get started quickly
+#quickstart: |-
+#  Here's how to get started...
+
+# Other files to include in this README from the project folder
+include:
+  - "docs/terraform.md"
+  - "docs/metrics.md"
+  - "docs/thanks.md"
+
+# Contributors to this project
+contributors:
+  - name: "Erik Osterman"
+    homepage: "https://github.com/osterman"
+    avatar: "http://s.gravatar.com/avatar/88c480d4f73b813904e00a5695a454cb?s=144"
+    github: "osterman"
+  - name: "Jamie Nelson"
+    homepage: "https://github.com/Jamie-BitFlight"
+    avatar: "https://avatars0.githubusercontent.com/u/25075504?s=144&u=ac7e53bda3706cb9d51907808574b6d342703b3e&v=4"
+    github: "Jamie-BitFlight"
+  - name: "Anton Babenko"
+    homepage: "https://github.com/antonbabenko"
+    avatar: "https://avatars3.githubusercontent.com/u/393243?s=144&v=4"
+    github: "antonbabenko"

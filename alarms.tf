@@ -82,7 +82,8 @@ resource "aws_cloudwatch_metric_alarm" "default" {
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
-  dashboard_name = "CISBenchmark_Statistics"
+  count          = "${var.create_dashboard == "true" ? 1 : 0}"
+  dashboard_name = "CISBenchmark_Statistics_Combined"
 
   dashboard_body = <<EOF
  {
@@ -106,4 +107,40 @@ resource "aws_cloudwatch_dashboard" "main" {
    ]
  }
  EOF
+}
+
+resource "aws_cloudwatch_dashboard" "main_individual" {
+  count          = "${var.create_dashboard == "true" ? 1 : 0}"
+  dashboard_name = "CISBenchmark_Statistics_Individual"
+
+  dashboard_body = <<EOF
+ {
+   "widgets": [
+     ${join(",",formatlist(
+       "{
+          \"type\":\"metric\",
+          \"x\":%v,
+          \"y\":%v,
+          \"width\":12,
+          \"height\":6,
+          \"properties\":{
+             \"metrics\":[
+                [ \"${local.metric_namespace}\", \"%v\" ]
+            ],
+          \"period\":300,
+          \"stat\":\"Sum\",
+          \"region\":\"${var.region}\",
+          \"title\":\"%v\"
+          }
+       }
+       ", local.layout_x, local.layout_y, local.metric_name, local.metric_name))}    
+   ]
+ }
+ EOF
+}
+
+locals {
+  # Two Columns
+  layout_x = [0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0]
+  layout_y = [0, 0, 7, 7, 15, 15, 22, 22, 29, 29, 36]
 }
