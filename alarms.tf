@@ -21,7 +21,7 @@ locals {
     "IAMPolicyEventCount",
   ]
 
-  metric_namespace = "CISBenchmark"
+  metric_namespace = "${var.metric_namespace}"
   metric_value     = "1"
 
   filter_pattern = [
@@ -79,4 +79,31 @@ resource "aws_cloudwatch_metric_alarm" "default" {
   threshold           = "${local.metric_name[count.index] == "ConsoleSignInFailureCount" ? "3" :"1"}"
   alarm_description   = "${local.alarm_description[count.index]}"
   alarm_actions       = ["${local.endpoints}"]
+}
+
+resource "aws_cloudwatch_dashboard" "main" {
+  dashboard_name = "CISBenchmark_Statistics"
+
+  dashboard_body = <<EOF
+ {
+   "widgets": [
+       {
+          "type":"metric",
+          "x":0,
+          "y":0,
+          "width":20,
+          "height":16,
+          "properties":{
+             "metrics":[ 
+               ${join(",",formatlist("[ \"${local.metric_namespace}\", \"%v\" ]", local.metric_name))}
+             ],
+             "period":300,
+             "stat":"Sum",
+             "region":"${var.region}",
+             "title":"CISBenchmark Statistics"
+          }
+       }
+   ]
+ }
+ EOF
 }

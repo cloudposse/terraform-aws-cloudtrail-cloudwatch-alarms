@@ -25,3 +25,8 @@ variable "region" {
 variable "log_group_name" {
   description = "The cloudtrail cloudwatch log group name"
 }
+
+variable "metric_namespace" {
+  description = "A namespace for grouping all of the metrics together"
+  default     = "CISBenchmark"
+}
