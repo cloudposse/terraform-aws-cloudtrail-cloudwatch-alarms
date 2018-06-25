@@ -15,5 +15,6 @@
 
 ## Dashboard Created
 Two CloudWatch Dashboards can be created as well, and will be automatically created by default.
-[![CloudWatch Dashboard](./docs/screen1.png)]
+
+![CloudWatch Dashboard](./docs/screen1.png)
 

@@ -73,7 +73,7 @@ For detailed usage which includes setting up cloudtrail, cloudwatch logs, roles,
 
 ## Dashboard Created
 Two CloudWatch Dashboards can be created as well, and will be automatically created by default.
-[![CloudWatch Dashboard](./docs/screen1.png)]
+![CloudWatch Dashboard](./docs/screen1.png)
 
 ### From LICENSE
 >  The alarm metric names, descriptions, and filters from this repository were used
