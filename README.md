@@ -6,7 +6,8 @@
 
 
 Terraform module for creating alarms for tracking important changes and occurances from cloudtrail.
-This module creates a set of filter metrics and alarms based on the security best practices covered in the AWS guide [AWS_CIS_Foundations_Benchmark](https://d0.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf).
+
+This module creates a set of filter metrics and alarms based on the security best practices covered in the [AWS CIS Foundations Benchmark](https://d0.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf) guide.
 
 
 ---
