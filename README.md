@@ -33,6 +33,10 @@ For detailed usage which includes setting up cloudtrail, cloudwatch logs, roles,
 
 
 
+## Examples
+
+Here's a complete [example](examples/simple/main.tf) of using this `terraform-aws-cloudtrail-cloudwatch-alarms` module.
+
 
 
 
@@ -76,11 +80,31 @@ Two CloudWatch Dashboards can be created as well, and will be automatically crea
 
 ![CloudWatch Dashboard](./docs/screen1.png)
 
-### From LICENSE
->  The alarm metric names, descriptions, and filters [from this repository were used](https://github.com/TeliaSoneraNorge/telia-terraform-modules/tree/master/cloudtrail-forwarder).
->  With many thanks to [Anton Babenko](https://github.com/antonbabenko) for pointing it out and saving me a lot of time scouring reference documents and describing alarms!
+## Credits
+
+The alarm metric names, descriptions, and filters [from this repository were used](https://github.com/TeliaSoneraNorge/telia-terraform-modules/tree/master/cloudtrail-forwarder).
+
+With many thanks to [Anton Babenko](https://github.com/antonbabenko) for pointing it out and saving us a lot of time scouring reference documents and describing alarms!
 
 
+
+
+
+## Related Projects
+
+Check out these related projects.
+
+- [terraform-aws-cloudtrail](https://github.com/cloudposse/terraform-aws-cloudtrail) - Terraform module to provision an AWS CloudTrail and an encrypted S3 bucket with versioning to store CloudTrail logs
+- [terraform-aws-cloudtrail-s3-bucket](https://github.com/cloudposse/terraform-aws-cloudtrail-s3-bucket) - S3 bucket with built in IAM policy to allow CloudTrail logs
+- [terraform-aws-cloudwatch-logs](https://github.com/cloudposse/terraform-aws-cloudwatch-logs) - Terraform Module to Provide a CloudWatch Logs Endpoint
+- [terraform-aws-cloudwatch-flow-logs](https://github.com/cloudposse/terraform-aws-cloudwatch-flow-logs) - Terraform module for enabling flow logs for vpc and subnets.
+- [terraform-aws-ec2-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-ec2-cloudwatch-sns-alarms) - Terraform module that configures CloudWatch SNS alerts for EC2 instances
+- [terraform-aws-ecs-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-ecs-cloudwatch-sns-alarms) - Terraform module for creating ECS service level alerts that go to an SNS endpoint
+- [terraform-aws-efs-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-efs-cloudwatch-sns-alarms) - Terraform module that configures CloudWatch SNS alerts for EFS
+- [terrform-aws-elasticache-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-elasticache-cloudwatch-sns-alarms) - Terraform module that configures CloudWatch SNS alerts for ElastiCache
+- [terraform-aws-lambda-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-lambda-cloudwatch-sns-alarms) - Terraform module for creating a set of Lambda alarms and outputting to an endpoint
+- [terraform-aws-rds-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-rds-cloudwatch-sns-alarms) - Terraform module that configures important RDS alerts using CloudWatch and sends them to an SNS topic
+- [terraform-aws-sqs-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-sqs-cloudwatch-sns-alarms) - Terraform module for creating alarms for SQS and notifying endpoints
 
 
 ## Help

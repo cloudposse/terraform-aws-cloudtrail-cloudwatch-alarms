@@ -28,14 +28,50 @@ badges:
     image: "https://slack.cloudposse.com/badge.svg"
     url: "https://slack.cloudposse.com"
 
-# related:
-#   - name: "terraform-aws-ssm-parameter-store"
-#     description: "AWS SSM Parameter Store module"
-#     url: "https://github.com/cloudposse/terraform-aws-ssm-parameter-store"
-#   - name: "terraform-aws-kms-key"
-#     description: "KMS Key module"
-#     url: "https://github.com/cloudposse/terraform-aws-kms-key"
+related:
+  - name: "terraform-aws-cloudtrail"
+    description: "Terraform module to provision an AWS CloudTrail and an encrypted S3 bucket with versioning to store CloudTrail logs"
+    url: "https://github.com/cloudposse/terraform-aws-cloudtrail"
 
+  - name: "terraform-aws-cloudtrail-s3-bucket"
+    description: "S3 bucket with built in IAM policy to allow CloudTrail logs"
+    url: "https://github.com/cloudposse/terraform-aws-cloudtrail-s3-bucket"
+
+  - name: "terraform-aws-cloudwatch-logs"
+    description: "Terraform Module to Provide a CloudWatch Logs Endpoint"
+    url: "https://github.com/cloudposse/terraform-aws-cloudwatch-logs"
+
+  - name: "terraform-aws-cloudwatch-flow-logs"
+    description: "Terraform module for enabling flow logs for vpc and subnets."
+    url: "https://github.com/cloudposse/terraform-aws-cloudwatch-flow-logs"
+
+  - name: "terraform-aws-ec2-cloudwatch-sns-alarms"
+    description: "Terraform module that configures CloudWatch SNS alerts for EC2 instances"
+    url: "https://github.com/cloudposse/terraform-aws-ec2-cloudwatch-sns-alarms"
+
+  - name: "terraform-aws-ecs-cloudwatch-sns-alarms"
+    description: "Terraform module for creating ECS service level alerts that go to an SNS endpoint"
+    url: "https://github.com/cloudposse/terraform-aws-ecs-cloudwatch-sns-alarms"
+
+  - name: "terraform-aws-efs-cloudwatch-sns-alarms"
+    description: "Terraform module that configures CloudWatch SNS alerts for EFS"
+    url: "https://github.com/cloudposse/terraform-aws-efs-cloudwatch-sns-alarms"
+
+  - name: "terrform-aws-elasticache-cloudwatch-sns-alarms"
+    description: "Terraform module that configures CloudWatch SNS alerts for ElastiCache"
+    url: "https://github.com/cloudposse/terraform-aws-elasticache-cloudwatch-sns-alarms"
+
+  - name: "terraform-aws-lambda-cloudwatch-sns-alarms"
+    description: "Terraform module for creating a set of Lambda alarms and outputting to an endpoint"
+    url: "https://github.com/cloudposse/terraform-aws-lambda-cloudwatch-sns-alarms"
+
+  - name: "terraform-aws-rds-cloudwatch-sns-alarms"
+    description: "Terraform module that configures important RDS alerts using CloudWatch and sends them to an SNS topic"
+    url: "https://github.com/cloudposse/terraform-aws-rds-cloudwatch-sns-alarms"
+
+  - name: "terraform-aws-sqs-cloudwatch-sns-alarms"
+    description: "Terraform module for creating alarms for SQS and notifying endpoints"
+    url: "https://github.com/cloudposse/terraform-aws-sqs-cloudwatch-sns-alarms"
 
 # Short description of this project
 description: |-
@@ -55,8 +91,8 @@ usage: |-
 
 
 # Example usage
-#examples: |-
-#  Example goes here...
+examples: |-
+  Here's a complete [example](examples/simple/main.tf) of using this `terraform-aws-cloudtrail-cloudwatch-alarms` module.
 
 # How to get started quickly
 #quickstart: |-
