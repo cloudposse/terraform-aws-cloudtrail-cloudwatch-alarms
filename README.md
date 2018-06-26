@@ -6,7 +6,8 @@
 
 
 Terraform module for creating alarms for tracking important changes and occurances from cloudtrail.
-This module creates a set of filter metrics and alarms based on the security best practices covered in the AWS guide [AWS_CIS_Foundations_Benchmark](https://d0.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf).
+
+This module creates a set of filter metrics and alarms based on the security best practices covered in the [AWS CIS Foundations Benchmark](https://d0.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf) guide.
 
 
 ---
@@ -33,6 +34,10 @@ For detailed usage which includes setting up cloudtrail, cloudwatch logs, roles,
 
 
 
+## Examples
+
+Here's a complete [example](examples/simple/main.tf) of using this `terraform-aws-cloudtrail-cloudwatch-alarms` module.
+
 
 
 
@@ -57,30 +62,52 @@ For detailed usage which includes setting up cloudtrail, cloudwatch logs, roles,
 | sns_topic_arn | The ARN of the SNS topic used |
 
 ## Metrics Tracked
+
 |  Alarm's Name |  Description  |
-|:-------------:|:-------------:|
-|  AuthorizationFailureCount    |  Alarms when an unauthorized API call is made.  | 
-|  S3BucketActivityEventCount   |  Alarms when an API call is made to S3 to put or delete a Bucket, Bucket Policy or Bucket ACL.  | 
-|  SecurityGroupEventCount      |  Alarms when an API call is made to create, update or delete a Security Group.  | 
-|  NetworkAclEventCount         |  Alarms when an API call is made to create, update or delete a Network ACL.  | 
-|  GatewayEventCount            |  Alarms when an API call is made to create, update or delete a Customer or Internet Gateway.  | 
-|  VpcEventCount                |  Alarms when an API call is made to create, update or delete a VPC, VPC peering connection or VPC connection to classic.  | 
-|  EC2InstanceEventCount        |  Alarms when an API call is made to create, terminate, start, stop or reboot an EC2 instance.  | 
-|  EC2LargeInstanceEventCount   |  Alarms when an API call is made to create, terminate, start, stop or reboot a 4x-large or greater EC2 instance.  | 
-|  CloudTrailEventCount         |  Alarms when an API call is made to create, update or delete a .cloudtrail. trail, or to start or stop logging to a trail.  | 
-|  ConsoleSignInFailureCount    |  Alarms when an unauthenticated API call is made to sign into the console.  | 
-|  IAMPolicyEventCount          |  Alarms when an API call is made to change an IAM policy.   |
+|:--------------|:--------------|
+|  `AuthorizationFailureCount`  |  Alarms when an unauthorized API call is made.  | 
+|  `S3BucketActivityEventCount` |  Alarms when an API call is made to S3 to put or delete a Bucket, Bucket Policy or Bucket ACL.  | 
+|  `SecurityGroupEventCount`    |  Alarms when an API call is made to create, update or delete a Security Group.  | 
+|  `NetworkAclEventCount`       |  Alarms when an API call is made to create, update or delete a Network ACL.  | 
+|  `GatewayEventCount`          |  Alarms when an API call is made to create, update or delete a Customer or Internet Gateway.  | 
+|  `VpcEventCount`              |  Alarms when an API call is made to create, update or delete a VPC, VPC peering connection or VPC connection to classic.  | 
+|  `EC2InstanceEventCount`      |  Alarms when an API call is made to create, terminate, start, stop or reboot an EC2 instance.  | 
+|  `EC2LargeInstanceEventCount` |  Alarms when an API call is made to create, terminate, start, stop or reboot a 4x-large or greater EC2 instance.  | 
+|  `CloudTrailEventCount`       |  Alarms when an API call is made to create, update or delete a .cloudtrail. trail, or to start or stop logging to a trail.  | 
+|  `ConsoleSignInFailureCount`  |  Alarms when an unauthenticated API call is made to sign into the console.  | 
+|  `IAMPolicyEventCount`        |  Alarms when an API call is made to change an IAM policy.   |
 
 ## Dashboard Created
+
 Two CloudWatch Dashboards can be created as well, and will be automatically created by default.
 
-![CloudWatch Dashboard](./docs/screen1.png)
+![CloudWatch Dashboard](docs/screen1.png)
 
-### From LICENSE
->  The alarm metric names, descriptions, and filters [from this repository were used](https://github.com/TeliaSoneraNorge/telia-terraform-modules/tree/master/cloudtrail-forwarder).
->  With many thanks to [Anton Babenko](https://github.com/antonbabenko) for pointing it out and saving me a lot of time scouring reference documents and describing alarms!
+## Credits
+
+The alarm metric names, descriptions, and filters [from this repository were used](https://github.com/TeliaSoneraNorge/telia-terraform-modules/tree/master/cloudtrail-forwarder).
+
+With many thanks to [Anton Babenko](https://github.com/antonbabenko) for pointing it out and saving us a lot of time scouring reference documents and describing alarms!
 
 
+
+
+
+## Related Projects
+
+Check out these related projects.
+
+- [terraform-aws-cloudtrail](https://github.com/cloudposse/terraform-aws-cloudtrail) - Terraform module to provision an AWS CloudTrail and an encrypted S3 bucket with versioning to store CloudTrail logs
+- [terraform-aws-cloudtrail-s3-bucket](https://github.com/cloudposse/terraform-aws-cloudtrail-s3-bucket) - S3 bucket with built in IAM policy to allow CloudTrail logs
+- [terraform-aws-cloudwatch-logs](https://github.com/cloudposse/terraform-aws-cloudwatch-logs) - Terraform Module to Provide a CloudWatch Logs Endpoint
+- [terraform-aws-cloudwatch-flow-logs](https://github.com/cloudposse/terraform-aws-cloudwatch-flow-logs) - Terraform module for enabling flow logs for vpc and subnets.
+- [terraform-aws-ec2-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-ec2-cloudwatch-sns-alarms) - Terraform module that configures CloudWatch SNS alerts for EC2 instances
+- [terraform-aws-ecs-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-ecs-cloudwatch-sns-alarms) - Terraform module for creating ECS service level alerts that go to an SNS endpoint
+- [terraform-aws-efs-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-efs-cloudwatch-sns-alarms) - Terraform module that configures CloudWatch SNS alerts for EFS
+- [terrform-aws-elasticache-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-elasticache-cloudwatch-sns-alarms) - Terraform module that configures CloudWatch SNS alerts for ElastiCache
+- [terraform-aws-lambda-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-lambda-cloudwatch-sns-alarms) - Terraform module for creating a set of Lambda alarms and outputting to an endpoint
+- [terraform-aws-rds-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-rds-cloudwatch-sns-alarms) - Terraform module that configures important RDS alerts using CloudWatch and sends them to an SNS topic
+- [terraform-aws-sqs-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-sqs-cloudwatch-sns-alarms) - Terraform module for creating alarms for SQS and notifying endpoints
 
 
 ## Help
