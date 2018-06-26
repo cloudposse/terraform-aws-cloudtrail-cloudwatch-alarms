@@ -18,15 +18,23 @@ provider "aws" {
 
 ## This is the module being used
 module "cloudtrail_api_alarms" {
-  source         = "../../"
+  # Use the git source in your own code.
+  # source         = "git::https://github.com/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms.git?ref=master"
+  source = "../../"
+
   region         = "${var.region}"
   log_group_name = "${aws_cloudwatch_log_group.default.name}"
 }
 
 ## Everything after this is standard cloudtrail setup
+
+## When destroying this example, if you want to keep the logs you will need to 
+## Copy the contents of the bucket somewhere first.
 resource "aws_s3_bucket" "default" {
   bucket_prefix = "cw-bucket-${var.region}"
   region        = "${var.region}"
+
+  force_destroy = true
 }
 
 resource "aws_s3_bucket_policy" "default" {
@@ -69,15 +77,21 @@ resource "aws_iam_role_policy" "policy" {
 
 data "aws_iam_policy_document" "policy" {
   statement {
-    effect    = "Allow"
-    actions   = ["logs:CreateLogStream"]
-    resources = ["${aws_cloudwatch_log_group.default.arn}:*:log-stream:*"]
+    effect  = "Allow"
+    actions = ["logs:CreateLogStream"]
+
+    resources = [
+      "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.default.name}:log-stream:*",
+    ]
   }
 
   statement {
-    effect    = "Allow"
-    actions   = ["logs:PutLogEvents"]
-    resources = ["${aws_cloudwatch_log_group.default.arn}:log-stream:*"]
+    effect  = "Allow"
+    actions = ["logs:PutLogEvents"]
+
+    resources = [
+      "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.default.name}:log-stream:*",
+    ]
   }
 }
 
@@ -106,7 +120,11 @@ resource "aws_cloudtrail" "default" {
   include_global_service_events = "true"
   cloud_watch_logs_role_arn     = "${aws_iam_role.cloudtrail_cloudwatch_events_role.arn}"
   cloud_watch_logs_group_arn    = "${aws_cloudwatch_log_group.default.arn}"
-  depends_on                    = ["aws_s3_bucket_policy.default"]
+  depends_on                    = ["aws_s3_bucket_policy.default", "aws_iam_role_policy.policy"]
+
+  # provisioner "local-exec" {
+  #   command = "sleep 10"
+  # }
 }
 
 output "sns_topic_arn" {
