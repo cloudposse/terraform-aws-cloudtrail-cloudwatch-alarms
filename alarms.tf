@@ -21,6 +21,7 @@ locals {
     "IAMPolicyEventCount",
     "ConsoleSignInWithoutMfaCount",
     "RootAccountUsageCount",
+    "KMSKeyPendingDeletionErrorCount",
   ]
 
   metric_namespace = "${var.metric_namespace}"
@@ -40,6 +41,7 @@ locals {
     "{ ($.eventName = DeleteGroupPolicy) || ($.eventName = DeleteRolePolicy) ||($.eventName=DeleteUserPolicy)||($.eventName=PutGroupPolicy)||($.eventName=PutRolePolicy)||($.eventName=PutUserPolicy)||($.eventName=CreatePolicy)||($.eventName=DeletePolicy)||($.eventName=CreatePolicyVersion)||($.eventName=DeletePolicyVersion)||($.eventName=AttachRolePolicy)||($.eventName=DetachRolePolicy)||($.eventName=AttachUserPolicy)||($.eventName=DetachUserPolicy)||($.eventName=AttachGroupPolicy)||($.eventName=DetachGroupPolicy)}",
     "{ $.eventName = \"ConsoleLogin\" && $.additionalEventData.MFAUsed = \"No\" }",
     "{ $.userIdentity.type = \"Root\" && $.userIdentity.invokedBy NOT EXISTS && $.eventType != \"AwsServiceEvent\" }",
+    "{ $.eventSource = kms* && $.errorMessage = \"* is pending deletion.\"}",
   ]
 
   alarm_description = [
@@ -56,6 +58,7 @@ locals {
     "Alarms when an API call is made to change an IAM policy.",
     "Alarms when a user logs in the console without MFA.",
     "Alarms when a root account usage is detected.",
+    "Alarms when a Customer created KMS key is pending deletion.",
   ]
 }
 
@@ -148,7 +151,7 @@ resource "aws_cloudwatch_dashboard" "main_individual" {
 locals {
   # Two Columns
   # Will experiment with this values
-  layout_x = [0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0]
+  layout_x = [0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0, 12]
 
-  layout_y = [0, 0, 7, 7, 15, 15, 22, 22, 29, 29, 36, 36, 43]
+  layout_y = [0, 0, 7, 7, 15, 15, 22, 22, 29, 29, 36, 36, 43, 43]
 }
