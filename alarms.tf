@@ -147,5 +147,5 @@ locals {
   # Will experiment with this values
   layout_x = [0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0, 12]
 
-  layout_y = [0, 0, 7, 7, 15, 15, 22, 22, 29, 29, 36, 29]
+  layout_y = [0, 0, 7, 7, 15, 15, 22, 22, 29, 29, 36, 36]
 }
