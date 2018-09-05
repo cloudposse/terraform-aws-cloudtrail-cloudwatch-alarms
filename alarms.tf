@@ -52,7 +52,7 @@ locals {
     "Alarms when an API call is made to create, update or delete a .cloudtrail. trail, or to start or stop logging to a trail.",
     "Alarms when an unauthenticated API call is made to sign into the console.",
     "Alarms when an API call is made to change an IAM policy.",
-    "Alarms when a user logs in the console without MFA",
+    "Alarms when a user logs in the console without MFA.",
   ]
 }
 
