@@ -19,6 +19,7 @@ locals {
     "CloudTrailEventCount",
     "ConsoleSignInFailureCount",
     "IAMPolicyEventCount",
+    "ConsoleSignInWithoutMfaCount",
   ]
 
   metric_namespace = "${var.metric_namespace}"
@@ -36,6 +37,7 @@ locals {
     "{ ($.eventName = CreateTrail) || ($.eventName = UpdateTrail) || ($.eventName = DeleteTrail) || ($.eventName = StartLogging) || ($.eventName = StopLogging) }",
     "{ ($.eventName = ConsoleLogin) && ($.errorMessage = \"Failed authentication\") }",
     "{ ($.eventName = DeleteGroupPolicy) || ($.eventName = DeleteRolePolicy) ||($.eventName=DeleteUserPolicy)||($.eventName=PutGroupPolicy)||($.eventName=PutRolePolicy)||($.eventName=PutUserPolicy)||($.eventName=CreatePolicy)||($.eventName=DeletePolicy)||($.eventName=CreatePolicyVersion)||($.eventName=DeletePolicyVersion)||($.eventName=AttachRolePolicy)||($.eventName=DetachRolePolicy)||($.eventName=AttachUserPolicy)||($.eventName=DetachUserPolicy)||($.eventName=AttachGroupPolicy)||($.eventName=DetachGroupPolicy)}",
+    "{ $.eventName = \"ConsoleLogin\" && $.additionalEventData.MFAUsed = \"No\" }",
   ]
 
   alarm_description = [
@@ -50,6 +52,7 @@ locals {
     "Alarms when an API call is made to create, update or delete a .cloudtrail. trail, or to start or stop logging to a trail.",
     "Alarms when an unauthenticated API call is made to sign into the console.",
     "Alarms when an API call is made to change an IAM policy.",
+    "Alarms when a user logs in the console without MFA",
   ]
 }
 
@@ -95,7 +98,7 @@ resource "aws_cloudwatch_dashboard" "main" {
           "width":20,
           "height":16,
           "properties":{
-             "metrics":[ 
+             "metrics":[
                ${join(",",formatlist("[ \"${local.metric_namespace}\", \"%v\" ]", local.metric_name))}
              ],
              "period":300,
@@ -133,7 +136,7 @@ resource "aws_cloudwatch_dashboard" "main_individual" {
           \"title\":\"%v\"
           }
        }
-       ", local.layout_x, local.layout_y, local.metric_name, local.metric_name))}    
+       ", local.layout_x, local.layout_y, local.metric_name, local.metric_name))}
    ]
  }
  EOF
@@ -141,6 +144,7 @@ resource "aws_cloudwatch_dashboard" "main_individual" {
 
 locals {
   # Two Columns
-  layout_x = [0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0]
-  layout_y = [0, 0, 7, 7, 15, 15, 22, 22, 29, 29, 36]
+  # Will experiment with this values
+  layout_x = [0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0, 12]
+  layout_y = [0, 0, 7, 7, 15, 15, 22, 22, 29, 29, 36, 29]
 }
