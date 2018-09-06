@@ -17,7 +17,7 @@
 |  `RootAccountUsageCount`           |  Alarms when a root account usage is detected.   |
 |  `KMSKeyPendingDeletionErrorCount` |  Alarms when a customer created KMS key is pending deletion.    |
 |  `AWSConfigChangeCount`            |  Alarms when AWS Config changes.   |
-|  `RouteTableChangesCount`          |  Alarms when route table changes are detected   |
+|  `RouteTableChangesCount`          |  Alarms when route table changes are detected.   |
 
 ## Dashboard Created
 

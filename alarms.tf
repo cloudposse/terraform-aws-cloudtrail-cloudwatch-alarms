@@ -64,7 +64,7 @@ locals {
     "Alarms when a root account usage is detected.",
     "Alarms when a customer created KMS key is pending deletion.",
     "Alarms when AWS Config changes.",
-    "Alarms when route table changes are detected",
+    "Alarms when route table changes are detected.",
   ]
 }
 
