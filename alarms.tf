@@ -22,6 +22,7 @@ locals {
     "ConsoleSignInWithoutMfaCount",
     "RootAccountUsageCount",
     "KMSKeyPendingDeletionErrorCount",
+    "AWSConfigChangeCount",
   ]
 
   metric_namespace = "${var.metric_namespace}"
@@ -42,6 +43,7 @@ locals {
     "{ $.eventName = \"ConsoleLogin\" && $.additionalEventData.MFAUsed = \"No\" }",
     "{ $.userIdentity.type = \"Root\" && $.userIdentity.invokedBy NOT EXISTS && $.eventType != \"AwsServiceEvent\" }",
     "{ $.eventSource = kms* && $.errorMessage = \"* is pending deletion.\"}",
+    "{ $.eventSource = config.amazonaws.com && (($.eventName=StopConfigurationRecorder)||($.eventName=DeleteDeliveryChannel) ||($.eventName=PutDeliveryChannel)||($.eventName=PutConfigurationRecorder)) }",
   ]
 
   alarm_description = [
@@ -59,6 +61,7 @@ locals {
     "Alarms when a user logs in the console without MFA.",
     "Alarms when a root account usage is detected.",
     "Alarms when a Customer created KMS key is pending deletion.",
+    "Alarms when AWS Config changes.",
   ]
 }
 
@@ -151,7 +154,7 @@ resource "aws_cloudwatch_dashboard" "main_individual" {
 locals {
   # Two Columns
   # Will experiment with this values
-  layout_x = [0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0, 12]
+  layout_x = [0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0]
 
-  layout_y = [0, 0, 7, 7, 15, 15, 22, 22, 29, 29, 36, 36, 43, 43]
+  layout_y = [0, 0, 7, 7, 15, 15, 22, 22, 29, 29, 36, 36, 43, 43, 50]
 }
