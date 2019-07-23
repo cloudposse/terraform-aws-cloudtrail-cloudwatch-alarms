@@ -48,7 +48,6 @@ locals {
     "{ ($.eventName = CreateRoute) || ($.eventName = CreateRouteTable) || ($.eventName = ReplaceRoute) || ($.eventName = ReplaceRouteTableAssociation) || ($.eventName = DeleteRouteTable) || ($.eventName = DeleteRoute) || ($.eventName = DisassociateRouteTable) }",
   ]
 
-
   alarm_description = [
     "Alarms when an unauthorized API call is made.",
     "Alarms when an API call is made to S3 to put or delete a Bucket, Bucket Policy or Bucket ACL.",
