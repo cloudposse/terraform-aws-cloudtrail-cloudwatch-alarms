@@ -91,7 +91,7 @@ resource "aws_cloudwatch_metric_alarm" "default" {
   period              = "300"                                                                         // 5 min
   statistic           = "Sum"
   treat_missing_data  = "notBreaching"
-  threshold           = "${local.metric_name[count.index] == "ConsoleSignInFailureCount" || ${local.metric_name[count.index] == "AuthorizationFailureCount"? "3" : "1"}"
+  threshold           = " ${(local.metric_name[count.index] == "ConsoleSignInFailureCount" || local.metric_name[count.index] == "AuthorizationFailureCount" ) ? "3" : "1"}"
   alarm_description   = "${local.alarm_description[count.index]}"
   alarm_actions       = ["${local.endpoints}"]
 }
