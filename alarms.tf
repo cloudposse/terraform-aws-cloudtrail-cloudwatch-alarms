@@ -47,8 +47,7 @@ locals {
     "{($.eventSource=kms.amazonaws.com) && (($.eventName=DisableKey) || ($.eventName=ScheduleKeyDeletion))}",
     "{($.eventSource=config.amazonaws.com) && (($.eventName=StopConfigurationRecorder) || ($.eventName=DeleteDeliveryChannel) || ($.eventName=PutDeliveryChannel) || ($.eventName=PutConfigurationRecorder))}",
     "{($.eventName=CreateRoute) || ($.eventName=CreateRouteTable) || ($.eventName=ReplaceRoute) || ($.eventName=ReplaceRouteTableAssociation) || ($.eventName=DeleteRouteTable) || ($.eventName=DeleteRoute) || ($.eventName=DisassociateRouteTable)}",
-    "{($.eventName=CreateTrafficMirrorTarget) || ($.eventName=CreateTrafficMirrorSession) || ($.eventName=CreateTrafficMirrorFilter) || ($.eventName=CreateTrafficMirrorFilterRule) || ($.eventName=DeleteTrafficMirrorTarget) || ($.eventName=DeleteTrafficMirrorSession) || ($.eventName=DeleteTrafficMirrorFilter) || ($.eventName=DeleteTrafficMirrorFilterRule) || ($.eventName=ModifyTrafficMirrorSession) || ($.eventName=ModifyTrafficMirrorNetworkServices) || ($.eventName=ModifyTrafficMirrorRule)}",
-    
+    "{($.eventName=CreateTrafficMirrorTarget) || ($.eventName=CreateTrafficMirrorSession) || ($.eventName=CreateTrafficMirrorFilter) || ($.eventName=CreateTrafficMirrorFilterRule) || ($.eventName=DeleteTrafficMirrorTarget) || ($.eventName=DeleteTrafficMirrorSession) || ($.eventName=DeleteTrafficMirrorFilter) || ($.eventName=DeleteTrafficMirrorFilterRule) || ($.eventName=ModifyTrafficMirrorSession) || ($.eventName=ModifyTrafficMirrorNetworkServices) || ($.eventName=ModifyTrafficMirrorRule)}"
   ]
 
   alarm_description = [
