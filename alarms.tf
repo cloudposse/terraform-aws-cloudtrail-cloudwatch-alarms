@@ -24,6 +24,7 @@ locals {
     "KMSKeyPendingDeletionErrorCount",
     "AWSConfigChangeCount",
     "RouteTableChangesCount",
+    "TrafficMirroringActivation"
   ]
 
   metric_namespace = "${var.metric_namespace}"
@@ -46,6 +47,8 @@ locals {
     "{($.eventSource=kms.amazonaws.com) && (($.eventName=DisableKey) || ($.eventName=ScheduleKeyDeletion))}",
     "{($.eventSource=config.amazonaws.com) && (($.eventName=StopConfigurationRecorder) || ($.eventName=DeleteDeliveryChannel) || ($.eventName=PutDeliveryChannel) || ($.eventName=PutConfigurationRecorder))}",
     "{($.eventName=CreateRoute) || ($.eventName=CreateRouteTable) || ($.eventName=ReplaceRoute) || ($.eventName=ReplaceRouteTableAssociation) || ($.eventName=DeleteRouteTable) || ($.eventName=DeleteRoute) || ($.eventName=DisassociateRouteTable)}",
+    "{($.eventName=CreateTrafficMirrorTarget) || ($.eventName=CreateTrafficMirrorSession) || ($.eventName=CreateTrafficMirrorFilter) || ($.eventName=CreateTrafficMirrorFilterRule) || ($.eventName=DeleteTrafficMirrorTarget) || ($.eventName=DeleteTrafficMirrorSession) || ($.eventName=DeleteTrafficMirrorFilter) || ($.eventName=DeleteTrafficMirrorFilterRule) || ($.eventName=ModifyTrafficMirrorSession) || ($.eventName=ModifyTrafficMirrorNetworkServices) || ($.eventName=ModifyTrafficMirrorRule)}",
+    
   ]
 
   alarm_description = [
@@ -65,6 +68,7 @@ locals {
     "Alarms when a customer created KMS key is pending deletion.",
     "Alarms when AWS Config changes.",
     "Alarms when route table changes are detected.",
+    "Alarms when and API Call is makde to create, delete or modify a traffic mirror"
   ]
 }
 
