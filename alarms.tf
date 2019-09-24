@@ -1,11 +1,16 @@
-data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
+data "aws_caller_identity" "current" {
+}
+
+data "aws_region" "current" {
+}
 
 locals {
   alert_for     = "CloudTrailBreach"
-  sns_topic_arn = "${var.sns_topic_arn == "" ? aws_sns_topic.default.arn : var.sns_topic_arn }"
-  endpoints     = "${distinct(compact(concat(list(local.sns_topic_arn), var.additional_endpoint_arns)))}"
-  region        = "${var.region == "" ? data.aws_region.current.name : var.region}"
+  sns_topic_arn = var.sns_topic_arn == "" ? aws_sns_topic.default.arn : var.sns_topic_arn
+  endpoints = distinct(
+    compact(concat([local.sns_topic_arn], var.additional_endpoint_arns)),
+  )
+  region = var.region == "" ? data.aws_region.current.name : var.region
 
   metric_name = [
     "AuthorizationFailureCount",
@@ -24,10 +29,10 @@ locals {
     "KMSKeyPendingDeletionErrorCount",
     "AWSConfigChangeCount",
     "RouteTableChangesCount",
-    "TrafficMirroringActivation"
+    "TrafficMirroringActivation",
   ]
 
-  metric_namespace = "${var.metric_namespace}"
+  metric_namespace = var.metric_namespace
   metric_value     = "1"
 
   filter_pattern = [
@@ -47,7 +52,7 @@ locals {
     "{($.eventSource=kms.amazonaws.com) && (($.eventName=DisableKey) || ($.eventName=ScheduleKeyDeletion))}",
     "{($.eventSource=config.amazonaws.com) && (($.eventName=StopConfigurationRecorder) || ($.eventName=DeleteDeliveryChannel) || ($.eventName=PutDeliveryChannel) || ($.eventName=PutConfigurationRecorder))}",
     "{($.eventName=CreateRoute) || ($.eventName=CreateRouteTable) || ($.eventName=ReplaceRoute) || ($.eventName=ReplaceRouteTableAssociation) || ($.eventName=DeleteRouteTable) || ($.eventName=DeleteRoute) || ($.eventName=DisassociateRouteTable)}",
-    "{($.eventName=CreateTrafficMirrorTarget) || ($.eventName=CreateTrafficMirrorSession) || ($.eventName=CreateTrafficMirrorFilter) || ($.eventName=CreateTrafficMirrorFilterRule) || ($.eventName=DeleteTrafficMirrorTarget) || ($.eventName=DeleteTrafficMirrorSession) || ($.eventName=DeleteTrafficMirrorFilter) || ($.eventName=DeleteTrafficMirrorFilterRule) || ($.eventName=ModifyTrafficMirrorSession) || ($.eventName=ModifyTrafficMirrorNetworkServices) || ($.eventName=ModifyTrafficMirrorRule)}"
+    "{($.eventName=CreateTrafficMirrorTarget) || ($.eventName=CreateTrafficMirrorSession) || ($.eventName=CreateTrafficMirrorFilter) || ($.eventName=CreateTrafficMirrorFilterRule) || ($.eventName=DeleteTrafficMirrorTarget) || ($.eventName=DeleteTrafficMirrorSession) || ($.eventName=DeleteTrafficMirrorFilter) || ($.eventName=DeleteTrafficMirrorFilterRule) || ($.eventName=ModifyTrafficMirrorSession) || ($.eventName=ModifyTrafficMirrorNetworkServices) || ($.eventName=ModifyTrafficMirrorRule)}",
   ]
 
   alarm_description = [
@@ -67,40 +72,48 @@ locals {
     "Alarms when a customer created KMS key is pending deletion.",
     "Alarms when AWS Config changes.",
     "Alarms when route table changes are detected.",
-    "Alarms when and API Call is makde to create, delete or modify a traffic mirror"
+    "Alarms when and API Call is makde to create, delete or modify a traffic mirror",
   ]
 }
 
 resource "aws_cloudwatch_log_metric_filter" "default" {
-  count          = "${length(local.filter_pattern)}"
+  count          = length(local.filter_pattern)
   name           = "${local.metric_name[count.index]}-filter"
-  pattern        = "${local.filter_pattern[count.index]}"
-  log_group_name = "${var.log_group_name}"
+  pattern        = local.filter_pattern[count.index]
+  log_group_name = var.log_group_name
 
   metric_transformation {
-    name      = "${local.metric_name[count.index]}"
-    namespace = "${local.metric_namespace}"
-    value     = "${local.metric_value}"
+    name      = local.metric_name[count.index]
+    namespace = local.metric_namespace
+    value     = local.metric_value
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "default" {
-  count               = "${length(local.filter_pattern)}"
+  count               = length(local.filter_pattern)
   alarm_name          = "${local.metric_name[count.index]}-alarm"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "1"
-  metric_name         = "${local.metric_name[count.index]}"
-  namespace           = "${local.metric_namespace}"
-  period              = "300"                                                                         // 5 min
+  metric_name         = local.metric_name[count.index]
+  namespace           = local.metric_namespace
+  period              = "300" // 5 min
   statistic           = "Sum"
   treat_missing_data  = "notBreaching"
-  threshold           = "${(local.metric_name[count.index] == "ConsoleSignInFailureCount" || local.metric_name[count.index] == "ConsoleSignInWithoutMfaCount" ) ? "3" : local.metric_name[count.index] == "AuthorizationFailureCount" ? "10" : "1"}"
-  alarm_description   = "${local.alarm_description[count.index]}"
-  alarm_actions       = ["${local.endpoints}"]
+  threshold           = local.metric_name[count.index] == "ConsoleSignInFailureCount" || local.metric_name[count.index] == "ConsoleSignInWithoutMfaCount" ? "3" : local.metric_name[count.index] == "AuthorizationFailureCount" ? "10" : "1"
+  alarm_description   = local.alarm_description[count.index]
+  # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
+  # force an interpolation expression to be interpreted as a list by wrapping it
+  # in an extra set of list brackets. That form was supported for compatibility in
+  # v0.11, but is no longer supported in Terraform v0.12.
+  #
+  # If the expression in the following list itself returns a list, remove the
+  # brackets to avoid interpretation as a list of lists. If the expression
+  # returns a single list item then leave it as-is and remove this TODO comment.
+  alarm_actions = local.endpoints
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
-  count          = "${var.create_dashboard == "true" ? 1 : 0}"
+  count          = var.create_dashboard == "true" ? 1 : 0
   dashboard_name = "CISBenchmark_Statistics_Combined"
 
   dashboard_body = <<EOF
@@ -114,7 +127,13 @@ resource "aws_cloudwatch_dashboard" "main" {
           "height":16,
           "properties":{
              "metrics":[
-               ${join(",",formatlist("[ \"${local.metric_namespace}\", \"%v\" ]", local.metric_name))}
+               ${join(
+  ",",
+  formatlist(
+    "[ \"${local.metric_namespace}\", \"%v\" ]",
+    local.metric_name,
+  ),
+)}
              ],
              "period":300,
              "stat":"Sum",
@@ -124,37 +143,33 @@ resource "aws_cloudwatch_dashboard" "main" {
        }
    ]
  }
- EOF
+ 
+EOF
+
 }
 
 resource "aws_cloudwatch_dashboard" "main_individual" {
-  count          = "${var.create_dashboard == "true" ? 1 : 0}"
+  count          = var.create_dashboard == "true" ? 1 : 0
   dashboard_name = "CISBenchmark_Statistics_Individual"
 
   dashboard_body = <<EOF
  {
    "widgets": [
-     ${join(",",formatlist(
-       "{
-          \"type\":\"metric\",
-          \"x\":%v,
-          \"y\":%v,
-          \"width\":12,
-          \"height\":6,
-          \"properties\":{
-             \"metrics\":[
-                [ \"${local.metric_namespace}\", \"%v\" ]
-            ],
-          \"period\":300,
-          \"stat\":\"Sum\",
-          \"region\":\"${var.region}\",
-          \"title\":\"%v\"
-          }
-       }
-       ", local.layout_x, local.layout_y, local.metric_name, local.metric_name))}
+     ${join(
+  ",",
+  formatlist(
+    "{\n          \"type\":\"metric\",\n          \"x\":%v,\n          \"y\":%v,\n          \"width\":12,\n          \"height\":6,\n          \"properties\":{\n             \"metrics\":[\n                [ \"${local.metric_namespace}\", \"%v\" ]\n            ],\n          \"period\":300,\n          \"stat\":\"Sum\",\n          \"region\":\"${var.region}\",\n          \"title\":\"%v\"\n          }\n       }\n       ",
+    local.layout_x,
+    local.layout_y,
+    local.metric_name,
+    local.metric_name,
+  ),
+)}
    ]
  }
- EOF
+ 
+EOF
+
 }
 
 locals {
@@ -164,3 +179,4 @@ locals {
 
   layout_y = [0, 0, 7, 7, 15, 15, 22, 22, 29, 29, 36, 36, 43, 43, 50, 50]
 }
+
