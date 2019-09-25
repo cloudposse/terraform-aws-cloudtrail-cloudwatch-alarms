@@ -55,7 +55,7 @@ Here's a complete [example](examples/simple/main.tf) of using this `terraform-aw
 |------|-------------|:----:|:-----:|:-----:|
 | add_sns_policy | Attach a policy that allows the notifications through to the SNS topic endpoint | string | `false` | no |
 | additional_endpoint_arns | Any alert endpoints, such as autoscaling, or app scaling endpoint arns that will respond to an alert | list | `<list>` | no |
-| create_dashboard | When true a dashboard that displays tha statistics as a line graph will be created in CloudWatch | string | `true` | no |
+| create_dashboard | When true a dashboard that displays the statistics as a line graph will be created in CloudWatch | string | `true` | no |
 | log_group_name | The cloudtrail cloudwatch log group name | string | - | yes |
 | metric_namespace | A namespace for grouping all of the metrics together | string | `CISBenchmark` | no |
 | region | The region that should be monitored for unauthorised AWS API Access. Current region used if none provied. | string | `` | no |
