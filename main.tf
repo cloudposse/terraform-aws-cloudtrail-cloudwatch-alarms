@@ -53,8 +53,14 @@ data "aws_iam_policy_document" "sns_topic_policy" {
     resources = ["${local.sns_topic_arn}"]
 
     principals {
-      type        = "Service"
-      identifiers = ["events.amazonaws.com"]
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = ["${aws_cloudwatch_metric_alarm.default.*.arn}"]
     }
   }
 }
