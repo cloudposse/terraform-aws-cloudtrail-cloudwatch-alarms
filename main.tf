@@ -53,7 +53,7 @@ data "aws_iam_policy_document" "sns_topic_policy" {
     resources = ["${local.sns_topic_arn}"]
 
     principals {
-      type        = "*"
+      type        = "AWS"
       identifiers = ["*"]
     }
 
