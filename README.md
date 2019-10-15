@@ -7,7 +7,7 @@
  [![Build Status](https://travis-ci.org/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms.svg?branch=master)](https://travis-ci.org/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms) [![Latest Release](https://img.shields.io/github/release/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms.svg)](https://github.com/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms/releases) [![Slack Community](https://slack.cloudposse.com/badge.svg)](https://slack.cloudposse.com)
 
 
-Terraform module for creating alarms for tracking important changes and occurances from cloudtrail.
+Terraform module for creating alarms for tracking important changes and occurrences from CloudTrail.
 
 This module creates a set of filter metrics and alarms based on the security best practices covered in the [AWS CIS Foundations Benchmark](https://d0.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf) guide.
 
@@ -37,7 +37,7 @@ module "cloudtrail_api_alarms" {
   log_group_name = "${aws_cloudwatch_log_group.default.name}"
 }
 ```
-For detailed usage which includes setting up cloudtrail, cloudwatch logs, roles, policies, and the s3 bucket - as well as using this module see the [example directory](./examples/simple)
+For detailed usage which includes setting up CloudTrail, CloudWatch logs, roles, policies, and the s3 bucket - as well as using this module see the [example directory](./examples/simple)
 
 
 
@@ -54,11 +54,11 @@ Here's a complete [example](examples/simple/main.tf) of using this `terraform-aw
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | add_sns_policy | Attach a policy that allows the notifications through to the SNS topic endpoint | bool | `false` | no |
-| additional_endpoint_arns | Any alert endpoints, such as autoscaling, or app scaling endpoint arns that will respond to an alert | list(string) | `<list>` | no |
+| additional_endpoint_arns | Any alert endpoints, such as autoscaling, or app scaling endpoint ARNs that will respond to an alert | list(string) | `<list>` | no |
 | create_dashboard | When true a dashboard that displays the statistics as a line graph will be created in CloudWatch | bool | `true` | no |
-| log_group_name | The cloudtrail cloudwatch log group name | string | - | yes |
+| log_group_name | The CloudTrail CloudWatch log group name | string | - | yes |
 | metric_namespace | A namespace for grouping all of the metrics together | string | `CISBenchmark` | no |
-| region | The region that should be monitored for unauthorised AWS API Access. Current region used if none provied. | string | `null` | no |
+| region | The region that should be monitored for unauthorized AWS API Access. Current region used if none is provided. | string | `null` | no |
 | sns_topic_arn | An SNS topic ARN that has already been created. Its policy must already allow access from CloudWatch Alarms, or set `add_sns_policy` to `true` | string | `null` | no |
 
 ## Outputs
@@ -81,7 +81,7 @@ Here's a complete [example](examples/simple/main.tf) of using this `terraform-aw
 |  `VpcEventCount`                   |  Alarms when an API call is made to create, update or delete a VPC, VPC peering connection or VPC connection to classic.  |
 |  `EC2InstanceEventCount`           |  Alarms when an API call is made to create, terminate, start, stop or reboot an EC2 instance.  |
 |  `EC2LargeInstanceEventCount`      |  Alarms when an API call is made to create, terminate, start, stop or reboot a 4x-large or greater EC2 instance.  |
-|  `CloudTrailEventCount`            |  Alarms when an API call is made to create, update or delete a .cloudtrail. trail, or to start or stop logging to a trail.  |
+|  `CloudTrailEventCount`            |  Alarms when an API call is made to create, update or delete a CloudTrail trail, or to start or stop logging to a trail.  |
 |  `ConsoleSignInFailureCount`       |  Alarms when an unauthenticated API call is made to sign into the console.  |
 |  `IAMPolicyEventCount`             |  Alarms when an API call is made to change an IAM policy.   |
 |  `ConsoleSignInWithoutMfaCount`    |  Alarms when a user logs into the console without MFA.   |
@@ -90,9 +90,9 @@ Here's a complete [example](examples/simple/main.tf) of using this `terraform-aw
 |  `AWSConfigChangeCount`            |  Alarms when AWS Config changes.   |
 |  `RouteTableChangesCount`          |  Alarms when route table changes are detected.   |
 
-## Dashboard Created
+## Dashboards Created
 
-Two CloudWatch Dashboards can be created as well, and will be automatically created by default.
+By default two CloudWatch Dashboards will be automatically created.
 
 ![CloudWatch Dashboard](docs/screen1.png)
 
