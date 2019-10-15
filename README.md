@@ -14,7 +14,7 @@ This module creates a set of filter metrics and alarms based on the security bes
 
 ---
 
-This project is part of our comprehensive ["SweetOps"](https://docs.cloudposse.com) approach towards DevOps. 
+This project is part of our comprehensive ["SweetOps"](https://docs.cloudposse.com) approach towards DevOps.
 
 
 It's 100% Open Source and licensed under the [APACHE2](LICENSE).
@@ -53,13 +53,13 @@ Here's a complete [example](examples/simple/main.tf) of using this `terraform-aw
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| add_sns_policy | Attach a policy that allows the notifications through to the SNS topic endpoint | string | `false` | no |
-| additional_endpoint_arns | Any alert endpoints, such as autoscaling, or app scaling endpoint arns that will respond to an alert | list | `<list>` | no |
-| create_dashboard | When true a dashboard that displays the statistics as a line graph will be created in CloudWatch | string | `true` | no |
+| add_sns_policy | Attach a policy that allows the notifications through to the SNS topic endpoint | bool | `false` | no |
+| additional_endpoint_arns | Any alert endpoints, such as autoscaling, or app scaling endpoint arns that will respond to an alert | list(string) | `<list>` | no |
+| create_dashboard | When true a dashboard that displays the statistics as a line graph will be created in CloudWatch | bool | `true` | no |
 | log_group_name | The cloudtrail cloudwatch log group name | string | - | yes |
 | metric_namespace | A namespace for grouping all of the metrics together | string | `CISBenchmark` | no |
-| region | The region that should be monitored for unauthorised AWS API Access. Current region used if none provied. | string | `` | no |
-| sns_topic_arn | An SNS topic ARN that has already been created. Its policy must already allow access from CloudWatch Alarms, or set `add_sns_policy` to `true` | string | `` | no |
+| region | The region that should be monitored for unauthorised AWS API Access. Current region used if none provied. | string | `null` | no |
+| sns_topic_arn | An SNS topic ARN that has already been created. Its policy must already allow access from CloudWatch Alarms, or set `add_sns_policy` to `true` | string | `null` | no |
 
 ## Outputs
 
@@ -132,9 +132,9 @@ File a GitHub [issue](https://github.com/cloudposse/terraform-aws-cloudtrail-clo
 
 ## Commercial Support
 
-Work directly with our team of DevOps experts via email, slack, and video conferencing. 
+Work directly with our team of DevOps experts via email, slack, and video conferencing.
 
-We provide [*commercial support*][commercial_support] for all of our [Open Source][github] projects. As a *Dedicated Support* customer, you have access to our team of subject matter experts at a fraction of the cost of a full-time engineer. 
+We provide [*commercial support*][commercial_support] for all of our [Open Source][github] projects. As a *Dedicated Support* customer, you have access to our team of subject matter experts at a fraction of the cost of a full-time engineer.
 
 [![E-Mail](https://img.shields.io/badge/email-hello@cloudposse.com-blue.svg)](mailto:hello@cloudposse.com)
 
@@ -144,7 +144,7 @@ We provide [*commercial support*][commercial_support] for all of our [Open Sourc
 - **Bug Fixes.** We'll rapidly work to fix any bugs in our projects.
 - **Build New Terraform Modules.** We'll develop original modules to provision infrastructure.
 - **Cloud Architecture.** We'll assist with your cloud strategy and design.
-- **Implementation.** We'll provide hands-on support to implement our reference architectures. 
+- **Implementation.** We'll provide hands-on support to implement our reference architectures.
 
 
 ## Community Forum
@@ -178,9 +178,9 @@ Copyright © 2017-2018 [Cloud Posse, LLC](https://cloudposse.com)
 
 
 
-## License 
+## License
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 See [LICENSE](LICENSE) for full details.
 
@@ -221,7 +221,7 @@ This project is maintained and funded by [Cloud Posse, LLC][website]. Like it? P
 
 We're a [DevOps Professional Services][hire] company based in Los Angeles, CA. We love [Open Source Software](https://github.com/cloudposse/)!
 
-We offer paid support on all of our projects.  
+We offer paid support on all of our projects.
 
 Check out [our other projects][github], [apply for a job][jobs], or [hire us][hire] to help with your cloud strategy and implementation.
 
