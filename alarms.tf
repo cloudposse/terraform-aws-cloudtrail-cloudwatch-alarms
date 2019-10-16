@@ -3,7 +3,7 @@ data "aws_region" "current" {}
 
 locals {
   alert_for     = "CloudTrailBreach"
-  sns_topic_arn = "${var.sns_topic_arn == "" ? aws_sns_topic.default.arn : var.sns_topic_arn }"
+  sns_topic_arn = "${var.sns_topic_arn == "" ? aws_sns_topic.default.arn : var.sns_topic_arn}"
   endpoints     = "${distinct(compact(concat(list(local.sns_topic_arn), var.additional_endpoint_arns)))}"
   region        = "${var.region == "" ? data.aws_region.current.name : var.region}"
 
@@ -66,6 +66,22 @@ locals {
     "Alarms when AWS Config changes.",
     "Alarms when route table changes are detected.",
   ]
+
+  individual_widget_format = <<EOF
+{
+   "type":"metric",
+   "x":%v,
+   "y":%v,
+   "width":12,
+   "height":6,
+   "properties":{ "metrics":[[ "${local.metric_namespace}", "%v" ]],
+     "period":300,
+     "stat":"Sum",
+     "region":"${var.region}",
+     "title":"%v"
+   }
+}
+EOF
 }
 
 resource "aws_cloudwatch_log_metric_filter" "default" {
@@ -88,12 +104,12 @@ resource "aws_cloudwatch_metric_alarm" "default" {
   evaluation_periods  = "1"
   metric_name         = "${local.metric_name[count.index]}"
   namespace           = "${local.metric_namespace}"
-  period              = "300"                                                                         // 5 min
+  period              = "300" // 5 min
   statistic           = "Sum"
   treat_missing_data  = "notBreaching"
-  threshold           = "${local.metric_name[count.index] == "ConsoleSignInFailureCount" ? "3" :"1"}"
+  threshold           = "${local.metric_name[count.index] == "ConsoleSignInFailureCount" ? "3" : "1"}"
   alarm_description   = "${local.alarm_description[count.index]}"
-  alarm_actions       = ["${local.endpoints}"]
+  alarm_actions       = "${local.endpoints}"
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
@@ -111,7 +127,7 @@ resource "aws_cloudwatch_dashboard" "main" {
           "height":16,
           "properties":{
              "metrics":[
-               ${join(",",formatlist("[ \"${local.metric_namespace}\", \"%v\" ]", local.metric_name))}
+               ${join(",", formatlist("[ \"${local.metric_namespace}\", \"%v\" ]", local.metric_name))}
              ],
              "period":300,
              "stat":"Sum",
@@ -121,7 +137,7 @@ resource "aws_cloudwatch_dashboard" "main" {
        }
    ]
  }
- EOF
+EOF
 }
 
 resource "aws_cloudwatch_dashboard" "main_individual" {
@@ -131,27 +147,10 @@ resource "aws_cloudwatch_dashboard" "main_individual" {
   dashboard_body = <<EOF
  {
    "widgets": [
-     ${join(",",formatlist(
-       "{
-          \"type\":\"metric\",
-          \"x\":%v,
-          \"y\":%v,
-          \"width\":12,
-          \"height\":6,
-          \"properties\":{
-             \"metrics\":[
-                [ \"${local.metric_namespace}\", \"%v\" ]
-            ],
-          \"period\":300,
-          \"stat\":\"Sum\",
-          \"region\":\"${var.region}\",
-          \"title\":\"%v\"
-          }
-       }
-       ", local.layout_x, local.layout_y, local.metric_name, local.metric_name))}
+     ${join(",", formatlist(local.individual_widget_format, local.layout_x, local.layout_y, local.metric_name, local.metric_name))}
    ]
  }
- EOF
+EOF
 }
 
 locals {
