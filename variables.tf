@@ -13,7 +13,7 @@ variable "sns_topic_arn" {
 variable "add_sns_policy" {
   description = "Attach a policy that allows the notifications through to the SNS topic endpoint"
   default     = false
-  type        = string
+  type        = bool
 }
 
 variable "region" {
