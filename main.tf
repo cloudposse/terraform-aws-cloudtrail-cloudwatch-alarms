@@ -1,4 +1,5 @@
-data "aws_caller_identity" "default" {}
+data "aws_caller_identity" "default" {
+}
 
 # Make a topic
 resource "aws_sns_topic" "default" {
@@ -6,9 +7,9 @@ resource "aws_sns_topic" "default" {
 }
 
 resource "aws_sns_topic_policy" "default" {
-  count  = "${var.add_sns_policy != "true" && var.sns_topic_arn != "" ? 0 : 1}"
-  arn    = "${local.sns_topic_arn}"
-  policy = "${data.aws_iam_policy_document.sns_topic_policy.json}"
+  count  = var.add_sns_policy != "true" && var.sns_topic_arn != "" ? 0 : 1
+  arn    = local.sns_topic_arn
+  policy = data.aws_iam_policy_document.sns_topic_policy.json
 }
 
 data "aws_iam_policy_document" "sns_topic_policy" {
@@ -30,7 +31,7 @@ data "aws_iam_policy_document" "sns_topic_policy" {
     ]
 
     effect    = "Allow"
-    resources = ["${local.sns_topic_arn}"]
+    resources = [local.sns_topic_arn]
 
     principals {
       type        = "AWS"
@@ -40,8 +41,7 @@ data "aws_iam_policy_document" "sns_topic_policy" {
     condition {
       test     = "StringEquals"
       variable = "AWS:SourceOwner"
-
-      values = [
+      values   = [
         "arn:aws:iam::${data.aws_caller_identity.default.account_id}:root",
       ]
     }
@@ -50,7 +50,7 @@ data "aws_iam_policy_document" "sns_topic_policy" {
   statement {
     sid       = "Allow ${local.alert_for} CloudwatchEvents"
     actions   = ["sns:Publish"]
-    resources = ["${local.sns_topic_arn}"]
+    resources = [local.sns_topic_arn]
 
     principals {
       type        = "AWS"
@@ -60,7 +60,8 @@ data "aws_iam_policy_document" "sns_topic_policy" {
     condition {
       test     = "StringEquals"
       variable = "AWS:SourceArn"
-      values   = ["${aws_cloudwatch_metric_alarm.default.*.arn}"]
+      values   = aws_cloudwatch_metric_alarm.default.*.arn
     }
   }
 }
+
