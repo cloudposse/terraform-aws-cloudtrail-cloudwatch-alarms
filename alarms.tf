@@ -4,7 +4,7 @@ data "aws_region" "current" {}
 locals {
   alert_for     = "CloudTrailBreach"
   sns_topic_arn = var.sns_topic_arn == "" ? aws_sns_topic.default.arn : var.sns_topic_arn
-  endpoints     = distinct(compact(concat(list(local.sns_topic_arn), var.additional_endpoint_arns)))
+  endpoints     = distinct(compact(concat([local.sns_topic_arn], var.additional_endpoint_arns)))
   log_group_region        = var.log_group_region == "" ? data.aws_region.current.name : var.log_group_region
 
   metric_name = [
@@ -93,7 +93,7 @@ resource "aws_cloudwatch_metric_alarm" "default" {
   treat_missing_data  = "notBreaching"
   threshold           = local.metric_name[count.index] == "ConsoleSignInFailureCount" ? "3" :"1"
   alarm_description   = local.alarm_description[count.index]
-  alarm_actions       = [local.endpoints]
+  alarm_actions       = local.endpoints
   tags = module.this.tags
 }
 
@@ -126,7 +126,11 @@ resource "aws_cloudwatch_dashboard" "main" {
 }
 
 locals {
+  # Two Columns
+  # Will experiment with this values
+  layout_x = [0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0, 12]
 
+  layout_y = [0, 0, 7, 7, 15, 15, 22, 22, 29, 29, 36, 36, 43, 43, 50, 50]
 }
 
 resource "aws_cloudwatch_dashboard" "main_individual" {
@@ -160,9 +164,8 @@ resource "aws_cloudwatch_dashboard" "main_individual" {
 }
 
 locals {
-  # Two Columns
-  # Will experiment with this values
-  layout_x = [0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0, 12, 0, 12]
+  dashboard_url_prefix = "https://console.aws.amazon.com/cloudwatch/home?region=${var.log_group_region}#dashboards:name="
 
-  layout_y = [0, 0, 7, 7, 15, 15, 22, 22, 29, 29, 36, 36, 43, 43, 50, 50]
+  dashboard_combined_url = join("", concat([local.dashboard_url_prefix], aws_cloudwatch_dashboard.main.*.dashboard_name))
+  dashboard_main_individual_url = join("", concat([local.dashboard_url_prefix], aws_cloudwatch_dashboard.main_individual.*.dashboard_name))
 }
