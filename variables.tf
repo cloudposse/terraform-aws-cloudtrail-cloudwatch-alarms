@@ -16,8 +16,8 @@ variable "add_sns_policy" {
   type        = "string"
 }
 
-variable "region" {
-  description = "The region that should be monitored for unauthorised AWS API Access. Current region used if none provied."
+variable "log_group_region" {
+  description = "The log group region that should be monitored for unauthorised AWS API Access. Current region used if none provided."
   default     = ""
   type        = "string"
 }

@@ -3,9 +3,9 @@ data "aws_region" "current" {}
 
 locals {
   alert_for     = "CloudTrailBreach"
-  sns_topic_arn = "${var.sns_topic_arn == "" ? aws_sns_topic.default.arn : var.sns_topic_arn }"
-  endpoints     = "${distinct(compact(concat(list(local.sns_topic_arn), var.additional_endpoint_arns)))}"
-  region        = "${var.region == "" ? data.aws_region.current.name : var.region}"
+  sns_topic_arn = var.sns_topic_arn == "" ? aws_sns_topic.default.arn : var.sns_topic_arn
+  endpoints     = distinct(compact(concat(list(local.sns_topic_arn), var.additional_endpoint_arns)))
+  log_group_region        = var.log_group_region == "" ? data.aws_region.current.name : var.log_group_region
 
   metric_name = [
     "AuthorizationFailureCount",
@@ -26,7 +26,7 @@ locals {
     "RouteTableChangesCount",
   ]
 
-  metric_namespace = "${var.metric_namespace}"
+  metric_namespace = var.metric_namespace
   metric_value     = "1"
 
   filter_pattern = [
@@ -69,36 +69,37 @@ locals {
 }
 
 resource "aws_cloudwatch_log_metric_filter" "default" {
-  count          = "${length(local.filter_pattern)}"
-  name           = "${local.metric_name[count.index]}-filter"
-  pattern        = "${local.filter_pattern[count.index]}"
-  log_group_name = "${var.log_group_name}"
+  count          = module.this.enabled ? length(local.filter_pattern) : 0
+  name           = join(module.this.delimiter, [module.this.id, local.metric_name[count.index], "filter"])
+  pattern        = local.filter_pattern[count.index]
+  log_group_name = var.log_group_name
 
   metric_transformation {
-    name      = "${local.metric_name[count.index]}"
-    namespace = "${local.metric_namespace}"
-    value     = "${local.metric_value}"
+    name      = local.metric_name[count.index]
+    namespace = local.metric_namespace
+    value     = local.metric_value
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "default" {
-  count               = "${length(local.filter_pattern)}"
-  alarm_name          = "${local.metric_name[count.index]}-alarm"
+  count               = module.this.enabled ? length(local.filter_pattern) : 0
+  alarm_name = join(module.this.delimiter, [module.this.id, local.metric_name[count.index], "alarm"])
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "1"
-  metric_name         = "${local.metric_name[count.index]}"
-  namespace           = "${local.metric_namespace}"
+  metric_name         = local.metric_name[count.index]
+  namespace           = local.metric_namespace
   period              = "300"                                                                         // 5 min
   statistic           = "Sum"
   treat_missing_data  = "notBreaching"
-  threshold           = "${local.metric_name[count.index] == "ConsoleSignInFailureCount" ? "3" :"1"}"
-  alarm_description   = "${local.alarm_description[count.index]}"
-  alarm_actions       = ["${local.endpoints}"]
+  threshold           = local.metric_name[count.index] == "ConsoleSignInFailureCount" ? "3" :"1"
+  alarm_description   = local.alarm_description[count.index]
+  alarm_actions       = [local.endpoints]
+  tags = module.this.tags
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
-  count          = "${var.create_dashboard == "true" ? 1 : 0}"
-  dashboard_name = "CISBenchmark_Statistics_Combined"
+  count          = module.this.enabled && var.create_dashboard == "true" ? 1 : 0
+  dashboard_name = join(module.this.delimiter, [module.this.id, "cis", "benchmark", "statistics", "combined"])
 
   dashboard_body = <<EOF
  {
@@ -115,7 +116,7 @@ resource "aws_cloudwatch_dashboard" "main" {
              ],
              "period":300,
              "stat":"Sum",
-             "region":"${var.region}",
+             "region":"${local.log_group_region}",
              "title":"CISBenchmark Statistics"
           }
        }
@@ -124,9 +125,13 @@ resource "aws_cloudwatch_dashboard" "main" {
  EOF
 }
 
+locals {
+
+}
+
 resource "aws_cloudwatch_dashboard" "main_individual" {
-  count          = "${var.create_dashboard == "true" ? 1 : 0}"
-  dashboard_name = "CISBenchmark_Statistics_Individual"
+  count          = module.this.enabled && var.create_dashboard == "true" ? 1 : 0
+  dashboard_name = join(module.this.delimiter, [module.this.id, "cis", "benchmark", "statistics", "individual"])
 
   dashboard_body = <<EOF
  {
@@ -144,7 +149,7 @@ resource "aws_cloudwatch_dashboard" "main_individual" {
             ],
           \"period\":300,
           \"stat\":\"Sum\",
-          \"region\":\"${var.region}\",
+          \"region\":\"${local.log_group_region}\",
           \"title\":\"%v\"
           }
        }
