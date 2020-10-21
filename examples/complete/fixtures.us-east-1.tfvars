@@ -5,5 +5,3 @@ namespace = "eg"
 stage = "test"
 
 name = "simple"
-
-

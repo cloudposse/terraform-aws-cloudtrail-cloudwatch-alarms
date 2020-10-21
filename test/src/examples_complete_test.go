@@ -1,9 +1,9 @@
 package test
 
 import (
-	"testing"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 // Test the Terraform module in examples/complete using Terratest
@@ -12,7 +12,18 @@ func TestExamplesComplete(t *testing.T)  {
 
 	terraformOptions := &terraform.Options{
 		TerraformDir: "../../examples/complete",
-		Upgrade: true,
-		VarFiles:
+		TerraformBinary: "terraform",
+		//Upgrade: true,
+		VarFiles: []string{"fixtures.us-east-1.tfvars"},
 	}
+
+	defer terraform.Destroy(t, terraformOptions)
+
+	terraform.InitAndApplyAndIdempotent(t, terraformOptions)
+
+
+	mainDashboardUrl := terraform.Output(t, terraformOptions, "")
+	expectedMainDashboardUrlPrefix := "https://console.aws.amazon.com/cloudwatch/home?region="
+
+	assert.Contains(t, mainDashboardUrl, expectedMainDashboardUrlPrefix)
 }

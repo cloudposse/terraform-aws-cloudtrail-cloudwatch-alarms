@@ -10,5 +10,5 @@ output "dashboard_combined" {
 
 output "dashboard_individual" {
   description = "URL to CloudWatch Individual Metric Dashboard"
-  value       = local.dashboard_main_individual_url
+  value       = local.dashboard_individual_url
 }

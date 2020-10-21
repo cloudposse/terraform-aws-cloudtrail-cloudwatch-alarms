@@ -2,7 +2,7 @@ data "aws_caller_identity" "default" {}
 
 resource "aws_sns_topic" "default" {
   count = module.this.enabled ? 1 : 0
-  name  = join(module.this.delimiter, [module.this.id, local.alert_for, "threshold", "alerts"])
+  name  = join(module.this.delimiter, [local.alert_for, "threshold", "alerts"])
   tags  = module.this.tags
 }
 
@@ -61,7 +61,7 @@ data "aws_iam_policy_document" "sns_topic_policy" {
     condition {
       test     = "StringEquals"
       variable = "AWS:SourceArn"
-      values   = [aws_cloudwatch_metric_alarm.default.*.arn]
+      values   = aws_cloudwatch_metric_alarm.default.*.arn
     }
   }
 }
