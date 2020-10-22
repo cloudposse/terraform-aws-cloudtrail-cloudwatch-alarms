@@ -26,7 +26,7 @@ resource "aws_cloudwatch_log_metric_filter" "default" {
 
 resource "aws_cloudwatch_metric_alarm" "default" {
   count               = module.this.enabled ? length(local.metrics) : 0
-  alarm_name          = join(module.this.delimiter, [local.metriks[count.index].name, "alarm"])
+  alarm_name          = join(module.this.delimiter, [local.metrics[count.index].name, "alarm"])
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "1"
   metric_name         = local.metrics[count.index].name
