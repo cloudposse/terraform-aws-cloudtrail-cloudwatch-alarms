@@ -9,15 +9,6 @@ module "cis_alarms" {
 ## Everything after this is standard cloudtrail setup
 data "aws_caller_identity" "current" {}
 
-module "label" {
-  // https://github.com/cloudposse/terraform-null-label
-  source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=0.19.2"
-  namespace = var.namespace
-  stage     = var.stage
-  name      = var.name
-  delimiter = "-"
-}
-
 module "cloudtrail_s3_bucket" {
   // https://github.com/cloudposse/terraform-aws-cloudtrail-s3-bucket
   source    = "git::https://github.com/cloudposse/terraform-aws-cloudtrail-s3-bucket.git?ref=0.12.0"
@@ -28,8 +19,8 @@ module "cloudtrail_s3_bucket" {
 }
 
 resource "aws_cloudwatch_log_group" "default" {
-  name = module.label.id
-  tags = module.label.tags
+  name = module.this.id
+  tags = module.this.tags
 }
 
 data "aws_iam_policy_document" "log_policy" {
@@ -55,13 +46,13 @@ data "aws_iam_policy_document" "assume_policy" {
 }
 
 resource "aws_iam_role" "cloudtrail_cloudwatch_events_role" {
-  name               = lower(join(module.label.delimiter, [module.label.id, "role"]))
+  name               = lower(join(module.this.delimiter, [module.this.id, "role"]))
   assume_role_policy = data.aws_iam_policy_document.assume_policy.json
-  tags               = module.label.tags
+  tags               = module.this.tags
 }
 
 resource "aws_iam_role_policy" "policy" {
-  name   = lower(join(module.label.delimiter, [module.label.id, "policy"]))
+  name   = lower(join(module.this.delimiter, [module.this.id, "policy"]))
   policy = data.aws_iam_policy_document.log_policy.json
   role   = aws_iam_role.cloudtrail_cloudwatch_events_role.id
 }
@@ -81,19 +72,4 @@ module "cloudtrail" {
   // https://github.com/terraform-providers/terraform-provider-aws/issues/14557#issuecomment-671975672
   cloud_watch_logs_group_arn = "${aws_cloudwatch_log_group.default.arn}:*"
   cloud_watch_logs_role_arn  = aws_iam_role.cloudtrail_cloudwatch_events_role.arn
-}
-
-
-## Remap the outputs for testing
-
-output "sns_topic_arn" {
-  value = module.cis_alarms.sns_topic_arn
-}
-
-output "dashboard_individual" {
-  value = module.cis_alarms.dashboard_individual
-}
-
-output "dashboard_combined" {
-  value = module.cis_alarms.dashboard_combined
 }

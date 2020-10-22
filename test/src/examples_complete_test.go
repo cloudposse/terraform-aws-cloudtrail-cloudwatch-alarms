@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -12,8 +13,7 @@ func TestExamplesComplete(t *testing.T)  {
 
 	terraformOptions := &terraform.Options{
 		TerraformDir: "../../examples/complete",
-		TerraformBinary: "terraform",
-		//Upgrade: true,
+		Upgrade: true,
 		VarFiles: []string{"fixtures.us-east-1.tfvars"},
 	}
 
@@ -21,9 +21,16 @@ func TestExamplesComplete(t *testing.T)  {
 
 	terraform.InitAndApplyAndIdempotent(t, terraformOptions)
 
+	regionEnvVar := terraformOptions.EnvVars["region"]
+	expectedDashboardUrlFormat := "https://console.aws.amazon.com/cloudwatch/home?region=%s#dashboards:name=%s"
 
-	mainDashboardUrl := terraform.Output(t, terraformOptions, "")
-	expectedMainDashboardUrlPrefix := "https://console.aws.amazon.com/cloudwatch/home?region="
+	// Assume '-' for delimiter
+	expectedCombinedDashboardUrl := fmt.Sprintf(expectedDashboardUrlFormat, regionEnvVar, "cis-benchmark-statistics-combined")
+	expectedIndividualDashboardUrl := fmt.Sprintf(expectedDashboardUrlFormat, regionEnvVar, "cis-benchmark-statistics-individual")
 
-	assert.Contains(t, mainDashboardUrl, expectedMainDashboardUrlPrefix)
+	combinedDashboardUrl := terraform.Output(t, terraformOptions, "dashboard_combined")
+	individualDashboardUrl := terraform.Output(t, terraformOptions, "dashboard_individual")
+
+	assert.Contains(t, combinedDashboardUrl, expectedCombinedDashboardUrl)
+	assert.Contains(t, individualDashboardUrl, expectedIndividualDashboardUrl)
 }
