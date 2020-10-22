@@ -2,10 +2,10 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-  alert_for     = "CloudTrailBreach"
-  sns_topic_arn = var.sns_topic_arn == "" && (length(aws_sns_topic.default) == 1 ? aws_sns_topic.default[0].arn : "") != "" ? aws_sns_topic.default[0].arn : var.sns_topic_arn
-  endpoints     = distinct(compact(concat([local.sns_topic_arn], var.additional_endpoint_arns)))
-  log_group_region        = var.log_group_region == "" ? data.aws_region.current.name : var.log_group_region
+  alert_for        = "CloudTrailBreach"
+  sns_topic_arn    = var.sns_topic_arn == "" && (length(aws_sns_topic.default) == 1 ? aws_sns_topic.default[0].arn : "") != "" ? aws_sns_topic.default[0].arn : var.sns_topic_arn
+  endpoints        = distinct(compact(concat([local.sns_topic_arn], var.additional_endpoint_arns)))
+  log_group_region = var.log_group_region == "" ? data.aws_region.current.name : var.log_group_region
 
   metric_namespace = var.metric_namespace
   metric_value     = "1"
@@ -26,19 +26,19 @@ resource "aws_cloudwatch_log_metric_filter" "default" {
 
 resource "aws_cloudwatch_metric_alarm" "default" {
   count               = module.this.enabled ? length(local.metrics) : 0
-  alarm_name = join(module.this.delimiter, [local.metrics[count.index].name, "alarm"])
+  alarm_name          = join(module.this.delimiter, [local.metriks[count.index].name, "alarm"])
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "1"
   metric_name         = local.metrics[count.index].name
   namespace           = local.metric_namespace
   // Period is in seconds (300 seconds == 5 mins)
-  period              = "300"
-  statistic           = "Sum"
-  treat_missing_data  = "notBreaching"
-  threshold           = local.metrics[count.index].name == "ConsoleSignInFailureCount" ? "3" :"1"
-  alarm_description   = local.metrics[count.index].description
-  alarm_actions       = local.endpoints
-  tags = module.this.tags
+  period             = "300"
+  statistic          = "Sum"
+  treat_missing_data = "notBreaching"
+  threshold          = local.metrics[count.index].name == "ConsoleSignInFailureCount" ? "3" : "1"
+  alarm_description  = local.metrics[count.index].description
+  alarm_actions      = local.endpoints
+  tags               = module.this.tags
 }
 
 resource "aws_cloudwatch_dashboard" "combined" {
@@ -48,20 +48,20 @@ resource "aws_cloudwatch_dashboard" "combined" {
   dashboard_body = jsonencode({
     widgets = [
       {
-        type = "metric"
-        x = 0
-        y = 0
-        width = 20
+        type   = "metric"
+        x      = 0
+        y      = 0
+        width  = 20
         height = 16
         properties = {
           metrics = [
-            for metric in local.metrics:
-              [local.metric_namespace, metric.name]
+            for metric in local.metrics :
+            [local.metric_namespace, metric.name]
           ]
           period = 300
-          stat = "Sum"
+          stat   = "Sum"
           region = local.log_group_region
-          title = "${local.metric_namespace} Statistics"
+          title  = "${local.metric_namespace} Statistics"
         }
       }
     ]
@@ -81,23 +81,23 @@ resource "aws_cloudwatch_dashboard" "individual" {
 
   dashboard_body = jsonencode({
     widgets = [
-      for index, metric in local.metrics:
-        {
-          type = "metric"
-          x = local.layout_x[index]
-          y = local.layout_y[index]
-          width = 12
-          height = 6
-          properties = {
-            metrics = [
-              [local.metric_namespace, metric.name]
-            ]
-            period = 300
-            stat = "Sum"
-            region = local.log_group_region
-            title = metric.name
-          }
+      for index, metric in local.metrics :
+      {
+        type   = "metric"
+        x      = local.layout_x[index]
+        y      = local.layout_y[index]
+        width  = 12
+        height = 6
+        properties = {
+          metrics = [
+            [local.metric_namespace, metric.name]
+          ]
+          period = 300
+          stat   = "Sum"
+          region = local.log_group_region
+          title  = metric.name
         }
+      }
     ]
   })
 }
@@ -105,6 +105,6 @@ resource "aws_cloudwatch_dashboard" "individual" {
 locals {
   dashboard_url_prefix = "https://console.aws.amazon.com/cloudwatch/home?region=${local.log_group_region}#dashboards:name="
 
-  dashboard_combined_url = join("", concat([local.dashboard_url_prefix], aws_cloudwatch_dashboard.combined.*.dashboard_name))
+  dashboard_combined_url   = join("", concat([local.dashboard_url_prefix], aws_cloudwatch_dashboard.combined.*.dashboard_name))
   dashboard_individual_url = join("", concat([local.dashboard_url_prefix], aws_cloudwatch_dashboard.individual.*.dashboard_name))
 }
