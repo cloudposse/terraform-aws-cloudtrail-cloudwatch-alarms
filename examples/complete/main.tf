@@ -1,3 +1,7 @@
+provider "aws" {
+  region = var.region
+}
+
 ## This is the module being used
 module "cis_alarms" {
   # Use the git source in your own code
@@ -11,11 +15,8 @@ data "aws_caller_identity" "current" {}
 
 module "cloudtrail_s3_bucket" {
   // https://github.com/cloudposse/terraform-aws-cloudtrail-s3-bucket
-  source    = "git::https://github.com/cloudposse/terraform-aws-cloudtrail-s3-bucket.git?ref=0.12.0"
-  namespace = var.namespace
-  stage     = var.stage
-  name      = var.name
-
+  source  = "git::https://github.com/cloudposse/terraform-aws-cloudtrail-s3-bucket.git?ref=0.12.0"
+  context = module.this.context
 }
 
 resource "aws_cloudwatch_log_group" "default" {
@@ -60,9 +61,7 @@ resource "aws_iam_role_policy" "policy" {
 module "cloudtrail" {
   // https://github.com/cloudposse/terraform-aws-cloudtrail
   source                        = "git::https://github.com/cloudposse/terraform-aws-cloudtrail.git?ref=0.14.0"
-  namespace                     = var.namespace
-  stage                         = var.stage
-  name                          = var.name
+  context                       = module.this.context
   enable_log_file_validation    = true
   include_global_service_events = true
   is_multi_region_trail         = true
