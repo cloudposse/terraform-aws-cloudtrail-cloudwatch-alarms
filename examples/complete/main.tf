@@ -4,8 +4,6 @@ provider "aws" {
 
 ## This is the module being used
 module "cis_alarms" {
-  # Use the git source in your own code
-  # source         = "git::https://github.com/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms.git?ref=<version>"
   source         = "../../"
   log_group_name = aws_cloudwatch_log_group.default.name
 }
@@ -14,8 +12,10 @@ module "cis_alarms" {
 data "aws_caller_identity" "current" {}
 
 module "cloudtrail_s3_bucket" {
-  // https://github.com/cloudposse/terraform-aws-cloudtrail-s3-bucket
-  source  = "git::https://github.com/cloudposse/terraform-aws-cloudtrail-s3-bucket.git?ref=0.12.0"
+  source = "git::https://github.com/cloudposse/terraform-aws-cloudtrail-s3-bucket.git?ref=0.12.0"
+
+  force_destroy = true
+
   context = module.this.context
 }
 
