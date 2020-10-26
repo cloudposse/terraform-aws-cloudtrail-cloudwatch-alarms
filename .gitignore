@@ -8,3 +8,6 @@
 *.zip
 build-harness
 .build-harness
+.test-harness
+
+.idea

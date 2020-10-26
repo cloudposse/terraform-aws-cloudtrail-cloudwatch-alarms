@@ -37,14 +37,14 @@ module "cloudtrail_api_alarms" {
   log_group_name = "${aws_cloudwatch_log_group.default.name}"
 }
 ```
-For detailed usage which includes setting up cloudtrail, cloudwatch logs, roles, policies, and the s3 bucket - as well as using this module see the [example directory](./examples/simple)
+For detailed usage which includes setting up cloudtrail, cloudwatch logs, roles, policies, and the s3 bucket - as well as using this module see the [example directory](examples/complete)
 
 
 
 
 ## Examples
 
-Here's a complete [example](examples/simple/main.tf) of using this `terraform-aws-cloudtrail-cloudwatch-alarms` module.
+Here's a complete [example](examples/complete/main.tf) of using this `terraform-aws-cloudtrail-cloudwatch-alarms` module.
 
 
 
