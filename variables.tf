@@ -10,10 +10,10 @@ variable "sns_topic_arn" {
   type        = string
 }
 
-variable "add_sns_policy" {
+variable "sns_policy_enabled" {
   description = "Attach a policy that allows the notifications through to the SNS topic endpoint"
-  default     = "false"
-  type        = string
+  default     = false
+  type        = bool
 }
 
 variable "log_group_region" {
@@ -33,8 +33,8 @@ variable "metric_namespace" {
   type        = string
 }
 
-variable "create_dashboard" {
+variable "dashboard_enabled" {
   description = "When true a dashboard that displays the statistics as a line graph will be created in CloudWatch"
-  default     = "true"
-  type        = string
+  default     = true
+  type        = bool
 }
