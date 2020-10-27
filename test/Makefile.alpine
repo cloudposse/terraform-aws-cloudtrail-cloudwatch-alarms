@@ -2,4 +2,4 @@ ifneq (,$(wildcard /sbin/apk))
 ## Install all dependencies for alpine
 deps:: init
 	@apk add --update terraform-docs@cloudposse json2hcl@cloudposse
-ndif
+endif
