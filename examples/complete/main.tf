@@ -12,7 +12,8 @@ module "cis_alarms" {
 data "aws_caller_identity" "current" {}
 
 module "cloudtrail_s3_bucket" {
-  source = "git::https://github.com/cloudposse/terraform-aws-cloudtrail-s3-bucket.git?ref=0.12.0"
+  source  = "cloudposse/cloudtrail-s3-bucket/aws"
+  version = "0.12.0"
 
   force_destroy = true
 
@@ -60,7 +61,8 @@ resource "aws_iam_role_policy" "policy" {
 
 module "cloudtrail" {
   // https://github.com/cloudposse/terraform-aws-cloudtrail
-  source                        = "git::https://github.com/cloudposse/terraform-aws-cloudtrail.git?ref=0.14.0"
+  source                        = "cloudposse/cloudtrail/aws"
+  version                       = "0.14.0"
   context                       = module.this.context
   enable_log_file_validation    = true
   include_global_service_events = true
