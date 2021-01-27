@@ -1,9 +1,10 @@
 data "aws_caller_identity" "default" {}
 
 resource "aws_sns_topic" "default" {
-  count = module.this.enabled ? 1 : 0
-  name  = join(module.this.delimiter, [local.alert_for, "threshold", "alerts"])
-  tags  = module.this.tags
+  count             = module.this.enabled ? 1 : 0
+  name              = join(module.this.delimiter, [local.alert_for, "threshold", "alerts"])
+  tags              = module.this.tags
+  kms_master_key_id = var.kms_master_key_id
 }
 
 resource "aws_sns_topic_policy" "default" {
