@@ -13,7 +13,7 @@ data "aws_caller_identity" "current" {}
 
 module "cloudtrail_s3_bucket" {
   source  = "cloudposse/cloudtrail-s3-bucket/aws"
-  version = "0.12.0"
+  version = "0.15.0"
 
   force_destroy = true
 
@@ -21,8 +21,9 @@ module "cloudtrail_s3_bucket" {
 }
 
 resource "aws_cloudwatch_log_group" "default" {
-  name = module.this.id
-  tags = module.this.tags
+  name              = module.this.id
+  tags              = module.this.tags
+  retention_in_days = 90
 }
 
 data "aws_iam_policy_document" "log_policy" {
@@ -62,8 +63,7 @@ resource "aws_iam_role_policy" "policy" {
 module "cloudtrail" {
   // https://github.com/cloudposse/terraform-aws-cloudtrail
   source                        = "cloudposse/cloudtrail/aws"
-  version                       = "0.14.0"
-  context                       = module.this.context
+  version                       = "0.17.0"
   enable_log_file_validation    = true
   include_global_service_events = true
   is_multi_region_trail         = true
@@ -73,4 +73,6 @@ module "cloudtrail" {
   // https://github.com/terraform-providers/terraform-provider-aws/issues/14557#issuecomment-671975672
   cloud_watch_logs_group_arn = "${aws_cloudwatch_log_group.default.arn}:*"
   cloud_watch_logs_role_arn  = aws_iam_role.cloudtrail_cloudwatch_events_role.arn
+
+  context = module.this.context
 }
