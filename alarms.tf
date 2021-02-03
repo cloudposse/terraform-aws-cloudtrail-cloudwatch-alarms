@@ -31,7 +31,7 @@ resource "aws_cloudwatch_metric_alarm" "default" {
   evaluation_periods  = "1"
   metric_name         = local.metrics[count.index].name
   namespace           = local.metric_namespace
-  // Period is in seconds (300 seconds == 5 mins)
+  # Period is in seconds (300 seconds == 5 mins)
   period             = "300"
   statistic          = "Sum"
   treat_missing_data = "notBreaching"
@@ -44,7 +44,7 @@ resource "aws_cloudwatch_metric_alarm" "default" {
 resource "aws_cloudwatch_dashboard" "combined" {
   count          = module.this.enabled && var.dashboard_enabled ? 1 : 0
   dashboard_name = join(module.this.delimiter, ["cis", "benchmark", "statistics", "combined"])
-  // https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html#CloudWatch-Dashboard-Properties-Metrics-Array-Format
+  # https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html#CloudWatch-Dashboard-Properties-Metrics-Array-Format
   dashboard_body = jsonencode({
     widgets = [
       {
