@@ -61,16 +61,16 @@ resource "aws_iam_role_policy" "policy" {
 }
 
 module "cloudtrail" {
-  // https://github.com/cloudposse/terraform-aws-cloudtrail
+  # https://github.com/cloudposse/terraform-aws-cloudtrail
   source                        = "cloudposse/cloudtrail/aws"
   version                       = "0.17.0"
   enable_log_file_validation    = true
   include_global_service_events = true
   is_multi_region_trail         = true
   enable_logging                = true
-  // TODO: Add event_selector
+  # TODO: Add event_selector
   s3_bucket_name = module.cloudtrail_s3_bucket.bucket_id
-  // https://github.com/terraform-providers/terraform-provider-aws/issues/14557#issuecomment-671975672
+  # https://github.com/terraform-providers/terraform-provider-aws/issues/14557#issuecomment-671975672
   cloud_watch_logs_group_arn = "${aws_cloudwatch_log_group.default.arn}:*"
   cloud_watch_logs_role_arn  = aws_iam_role.cloudtrail_cloudwatch_events_role.arn
 
