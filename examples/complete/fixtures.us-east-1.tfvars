@@ -5,3 +5,5 @@ namespace = "eg"
 stage = "test"
 
 name = "simple"
+
+metrics_paths = ["../../catalog/*.yaml"]

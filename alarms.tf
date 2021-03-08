@@ -12,34 +12,43 @@ locals {
 }
 
 resource "aws_cloudwatch_log_metric_filter" "default" {
-  count          = module.this.enabled ? length(local.metrics) : 0
-  name           = join(module.this.delimiter, [local.metrics[count.index].name, "filter"])
-  pattern        = local.metrics[count.index].filter_pattern
+  for_each = module.this.enabled ? var.metrics : {}
+  name           = join(module.this.delimiter, [each.value.name, "filter"]) 
+  pattern        = each.value.filter_pattern
   log_group_name = var.log_group_name
 
   metric_transformation {
-    name      = local.metrics[count.index].name
-    namespace = local.metric_namespace
-    value     = local.metric_value
+    name      = each.value.name
+    namespace = each.value.metric_namespace
+    value     = lookup(each.value, "metric_value", "1")
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "default" {
-  count               = module.this.enabled ? length(local.metrics) : 0
-  alarm_name          = join(module.this.delimiter, [local.metrics[count.index].name, "alarm"])
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = "1"
-  metric_name         = local.metrics[count.index].name
-  namespace           = local.metric_namespace
+  for_each = module.this.enabled ? var.metrics : {}
+  alarm_name          = join(module.this.delimiter, [each.value.name, "alarm"])
+  comparison_operator = lookup(each.value, "alarm_comparison_operator", "GreaterThanOrEqualToThreshold")
+  evaluation_periods  = lookup(each.value, "alarm_evaluation_periods", "1")
+  metric_name         = each.value.name
+  namespace           = each.value.metric_namespace
   # Period is in seconds (300 seconds == 5 mins)
-  period             = "300"
-  statistic          = "Sum"
-  treat_missing_data = "notBreaching"
-  threshold          = local.metrics[count.index].name == "ConsoleSignInFailureCount" ? "3" : "1"
-  alarm_description  = local.metrics[count.index].description
+  period             = lookup(each.value, "alarm_period", "300")
+  statistic          = lookup(each.value, "alarm_statistic", "Sum")
+  treat_missing_data = lookup(each.value, "alarm_treat_missing_data", "notBreaching")
+  threshold          = each.value.alarm_threshold
+  alarm_description  = each.value.alarm_description
   alarm_actions      = local.endpoints
   tags               = module.this.tags
 }
+
+# IAMPolicyEventCount:
+#   name: "IAMPolicyEventCount"
+#   pattern: "{ ($.eventName = DeleteGroupPolicy) || ($.eventName = DeleteRolePolicy) ||($.eventName=DeleteUserPolicy)||($.eventName=PutGroupPolicy)||($.eventName=PutRolePolicy)||($.eventName=PutUserPolicy)||($.eventName=CreatePolicy)||($.eventName=DeletePolicy)||($.eventName=CreatePolicyVersion)||($.eventName=DeletePolicyVersion)||($.eventName=AttachRolePolicy)||($.eventName=DetachRolePolicy)||($.eventName=AttachUserPolicy)||($.eventName=DetachUserPolicy)||($.eventName=AttachGroupPolicy)||($.eventName=DetachGroupPolicy)}"
+#   metric_name:
+#   metric_namespace:
+#   metric_value:
+#   metric_alarm_threshold:
+#   metric_alarm_description: "Alarms when an API call is made to change an IAM policy."
 
 resource "aws_cloudwatch_dashboard" "combined" {
   count          = module.this.enabled && var.dashboard_enabled ? 1 : 0
