@@ -99,20 +99,34 @@ The table below correctly indicates which inputs are required.
 
 
 ```hcl
+module "metric_configs" {
+  source  = "cloudposse/config/yaml"
+  # Cloud Posse recommends pinning every module to a specific version
+  # version     = "x.x.x"
+
+  map_config_local_base_path = "./catalog"
+  map_config_paths           = "*.yaml"
+
+  context = module.this.context
+}
+
 module "cloudtrail_api_alarms" {
-  source         = "git::https://github.com/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms.git"
-  region         = "${var.region}"
+  source  = "cloudposse/cloudtrail-cloudwatch-alarms/aws"
+  # Cloud Posse recommends pinning every module to a specific version
+  # version     = "x.x.x"
+
   log_group_name = "${aws_cloudwatch_log_group.default.name}"
+  metrics = module.metric_configs.map_configs
 }
 ```
-For detailed usage which includes setting up cloudtrail, cloudwatch logs, roles, policies, and the s3 bucket - as well as using this module see the [example directory](./examples/simple)
+For detailed usage which includes setting up cloudtrail, cloudwatch logs, roles, policies, and the s3 bucket - as well as using this module see the [example directory](./examples/complete)
 
 
 
 
 ## Examples
 
-Here's a complete [example](examples/simple/main.tf) of using this `terraform-aws-cloudtrail-cloudwatch-alarms` module.
+Here's a complete [example](examples/complete/main.tf) of using this `terraform-aws-cloudtrail-cloudwatch-alarms` module.
 
 
 
@@ -169,7 +183,7 @@ Here's a complete [example](examples/simple/main.tf) of using this `terraform-aw
 | log\_group\_name | The cloudtrail cloudwatch log group name | `string` | n/a | yes |
 | log\_group\_region | The log group region that should be monitored for unauthorised AWS API Access. Current region used if none provided. | `string` | `""` | no |
 | metric\_namespace | A namespace for grouping all of the metrics together | `string` | `"CISBenchmark"` | no |
-| metrics | The cloudwatch metrics and corresponding alarm definitions | <pre>map(object({<br>    name = string<br>    filter_pattern = string<br>    metric_namespace = string<br>    metric_value = string<br>    alarm_comparison_operator = string<br>    alarm_evaluation_periods = string<br>    alarm_period = string<br>    alarm_statistic = string<br>    alarm_treat_missing_data = string<br>    alarm_threshold = string<br>    alarm_description = string<br>  }))</pre> | `{}` | no |
+| metrics | The cloudwatch metrics and corresponding alarm definitions | <pre>map(object({<br>    name                      = string<br>    filter_pattern            = string<br>    metric_namespace          = string<br>    metric_value              = string<br>    alarm_comparison_operator = string<br>    alarm_evaluation_periods  = string<br>    alarm_period              = string<br>    alarm_statistic           = string<br>    alarm_treat_missing_data  = string<br>    alarm_threshold           = string<br>    alarm_description         = string<br>  }))</pre> | `{}` | no |
 | name | Solution name, e.g. 'app' or 'jenkins' | `string` | `null` | no |
 | namespace | Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp' | `string` | `null` | no |
 | regex\_replace\_chars | Regex to replace chars with empty string in `namespace`, `environment`, `stage` and `name`.<br>If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits. | `string` | `null` | no |
@@ -377,8 +391,8 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
 ### Contributors
 
 <!-- markdownlint-disable -->
-|  [![Erik Osterman][osterman_avatar]][osterman_homepage]<br/>[Erik Osterman][osterman_homepage] | [![Jamie Nelson][Jamie-BitFlight_avatar]][Jamie-BitFlight_homepage]<br/>[Jamie Nelson][Jamie-BitFlight_homepage] | [![Anton Babenko][antonbabenko_avatar]][antonbabenko_homepage]<br/>[Anton Babenko][antonbabenko_homepage] |
-|---|---|---|
+|  [![Erik Osterman][osterman_avatar]][osterman_homepage]<br/>[Erik Osterman][osterman_homepage] | [![Jamie Nelson][Jamie-BitFlight_avatar]][Jamie-BitFlight_homepage]<br/>[Jamie Nelson][Jamie-BitFlight_homepage] | [![Anton Babenko][antonbabenko_avatar]][antonbabenko_homepage]<br/>[Anton Babenko][antonbabenko_homepage] | [![PePe Amengual][jamengual_avatar]][jamengual_homepage]<br/>[PePe Amengual][jamengual_homepage] |
+|---|---|---|---|
 <!-- markdownlint-restore -->
 
 
@@ -392,6 +406,9 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
 
   [antonbabenko_homepage]: https://github.com/antonbabenko
   [antonbabenko_avatar]: https://avatars3.githubusercontent.com/u/393243?s=144&v=4
+
+  [jamengual_homepage]: https://github.com/jamengual
+  [jamengual_avatar]: https://avatars.githubusercontent.com/u/2208324?s=460&u=4aad5a88c8d514db5a295026e762654d814747c0&v=4
 
 
 [![README Footer][readme_footer_img]][readme_footer_link]

@@ -82,18 +82,32 @@ description: |-
 # How to use this project
 usage: |-
   ```hcl
+  module "metric_configs" {
+    source  = "cloudposse/config/yaml"
+    # Cloud Posse recommends pinning every module to a specific version
+    # version     = "x.x.x"
+
+    map_config_local_base_path = "./catalog"
+    map_config_paths           = "*.yaml"
+
+    context = module.this.context
+  }
+
   module "cloudtrail_api_alarms" {
-    source         = "git::https://github.com/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms.git"
-    region         = "${var.region}"
+    source  = "cloudposse/cloudtrail-cloudwatch-alarms/aws"
+    # Cloud Posse recommends pinning every module to a specific version
+    # version     = "x.x.x"
+
     log_group_name = "${aws_cloudwatch_log_group.default.name}"
+    metrics = module.metric_configs.map_configs
   }
   ```
-  For detailed usage which includes setting up cloudtrail, cloudwatch logs, roles, policies, and the s3 bucket - as well as using this module see the [example directory](./examples/simple)
+  For detailed usage which includes setting up cloudtrail, cloudwatch logs, roles, policies, and the s3 bucket - as well as using this module see the [example directory](./examples/complete)
 
 
 # Example usage
 examples: |-
-  Here's a complete [example](examples/simple/main.tf) of using this `terraform-aws-cloudtrail-cloudwatch-alarms` module.
+  Here's a complete [example](examples/complete/main.tf) of using this `terraform-aws-cloudtrail-cloudwatch-alarms` module.
 
 # How to get started quickly
 #quickstart: |-
@@ -119,3 +133,6 @@ contributors:
     homepage: "https://github.com/antonbabenko"
     avatar: "https://avatars3.githubusercontent.com/u/393243?s=144&v=4"
     github: "antonbabenko"
+  - name: "PePe Amengual"
+    avatar: "https://avatars.githubusercontent.com/u/2208324?s=460&u=4aad5a88c8d514db5a295026e762654d814747c0&v=4"
+    github: "jamengual"
