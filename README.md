@@ -408,7 +408,7 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
   [antonbabenko_avatar]: https://avatars3.githubusercontent.com/u/393243?s=144&v=4
 
   [jamengual_homepage]: https://github.com/jamengual
-  [jamengual_avatar]: https://avatars.githubusercontent.com/u/2208324?s=460&u=4aad5a88c8d514db5a295026e762654d814747c0&v=4
+  [jamengual_avatar]: https://avatars.githubusercontent.com/u/2208324?s=144&v=4
 
 
 [![README Footer][readme_footer_img]][readme_footer_link]
