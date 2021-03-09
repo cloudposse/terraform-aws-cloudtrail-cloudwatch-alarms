@@ -68,5 +68,5 @@ data "aws_iam_policy_document" "sns_topic_policy" {
 }
 
 locals {
-  metric_alarms_arns = [for i in aws_cloudwatch_metric_alarm.default: i.arn]
+  metric_alarms_arns = [for i in aws_cloudwatch_metric_alarm.default : i.arn]
 }

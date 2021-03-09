@@ -9,12 +9,12 @@ locals {
 
   metric_namespace = var.metric_namespace
   metric_value     = "1"
-  metrics_index =  values(var.metrics)
+  metrics_index    = values(var.metrics)
 }
 
 resource "aws_cloudwatch_log_metric_filter" "default" {
-  for_each = module.this.enabled ? var.metrics : {}
-  name           = join(module.this.delimiter, [each.value.name, "filter"]) 
+  for_each       = module.this.enabled ? var.metrics : {}
+  name           = join(module.this.delimiter, [each.value.name, "filter"])
   pattern        = each.value.filter_pattern
   log_group_name = var.log_group_name
 
@@ -26,7 +26,7 @@ resource "aws_cloudwatch_log_metric_filter" "default" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "default" {
-  for_each = module.this.enabled ? var.metrics : {}
+  for_each            = module.this.enabled ? var.metrics : {}
   alarm_name          = join(module.this.delimiter, [each.value.name, "alarm"])
   comparison_operator = each.value.alarm_comparison_operator
   evaluation_periods  = each.value.alarm_evaluation_periods
