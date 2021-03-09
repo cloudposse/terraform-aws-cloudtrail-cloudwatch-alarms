@@ -9,6 +9,7 @@ locals {
 
   metric_namespace = var.metric_namespace
   metric_value     = "1"
+  metrics_index =  values(var.metrics)
 }
 
 resource "aws_cloudwatch_log_metric_filter" "default" {
@@ -20,35 +21,26 @@ resource "aws_cloudwatch_log_metric_filter" "default" {
   metric_transformation {
     name      = each.value.name
     namespace = each.value.metric_namespace
-    value     = lookup(each.value, "metric_value", "1")
+    value     = each.value.metric_value
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "default" {
   for_each = module.this.enabled ? var.metrics : {}
   alarm_name          = join(module.this.delimiter, [each.value.name, "alarm"])
-  comparison_operator = lookup(each.value, "alarm_comparison_operator", "GreaterThanOrEqualToThreshold")
-  evaluation_periods  = lookup(each.value, "alarm_evaluation_periods", "1")
+  comparison_operator = each.value.alarm_comparison_operator
+  evaluation_periods  = each.value.alarm_evaluation_periods
   metric_name         = each.value.name
   namespace           = each.value.metric_namespace
   # Period is in seconds (300 seconds == 5 mins)
-  period             = lookup(each.value, "alarm_period", "300")
-  statistic          = lookup(each.value, "alarm_statistic", "Sum")
-  treat_missing_data = lookup(each.value, "alarm_treat_missing_data", "notBreaching")
+  period             = each.value.alarm_period
+  statistic          = each.value.alarm_statistic
+  treat_missing_data = each.value.alarm_treat_missing_data
   threshold          = each.value.alarm_threshold
   alarm_description  = each.value.alarm_description
   alarm_actions      = local.endpoints
   tags               = module.this.tags
 }
-
-# IAMPolicyEventCount:
-#   name: "IAMPolicyEventCount"
-#   pattern: "{ ($.eventName = DeleteGroupPolicy) || ($.eventName = DeleteRolePolicy) ||($.eventName=DeleteUserPolicy)||($.eventName=PutGroupPolicy)||($.eventName=PutRolePolicy)||($.eventName=PutUserPolicy)||($.eventName=CreatePolicy)||($.eventName=DeletePolicy)||($.eventName=CreatePolicyVersion)||($.eventName=DeletePolicyVersion)||($.eventName=AttachRolePolicy)||($.eventName=DetachRolePolicy)||($.eventName=AttachUserPolicy)||($.eventName=DetachUserPolicy)||($.eventName=AttachGroupPolicy)||($.eventName=DetachGroupPolicy)}"
-#   metric_name:
-#   metric_namespace:
-#   metric_value:
-#   metric_alarm_threshold:
-#   metric_alarm_description: "Alarms when an API call is made to change an IAM policy."
 
 resource "aws_cloudwatch_dashboard" "combined" {
   count          = module.this.enabled && var.dashboard_enabled ? 1 : 0
@@ -64,8 +56,8 @@ resource "aws_cloudwatch_dashboard" "combined" {
         height = 16
         properties = {
           metrics = [
-            for metric in local.metrics :
-            [local.metric_namespace, metric.name]
+            for metric in var.metrics :
+            [metric.metric_namespace, metric.name]
           ]
           period = 300
           stat   = "Sum"
@@ -90,7 +82,7 @@ resource "aws_cloudwatch_dashboard" "individual" {
 
   dashboard_body = jsonencode({
     widgets = [
-      for index, metric in local.metrics :
+      for index, metric in local.metrics_index :
       {
         type   = "metric"
         x      = local.layout_x[index]
@@ -99,7 +91,7 @@ resource "aws_cloudwatch_dashboard" "individual" {
         height = 6
         properties = {
           metrics = [
-            [local.metric_namespace, metric.name]
+            [metric.metric_namespace, metric.name]
           ]
           period = 300
           stat   = "Sum"

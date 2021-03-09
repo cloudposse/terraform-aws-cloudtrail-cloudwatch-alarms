@@ -2,6 +2,7 @@ provider "aws" {
   region = var.region
 }
 
+
 ## Everything after this is standard cloudtrail setup
 data "aws_caller_identity" "current" {}
 
@@ -59,7 +60,7 @@ module "metric_configs" {
   version = "0.6.0"
 
   map_config_local_base_path = path.module
-  map_config_paths           = var.metric_paths
+  map_config_paths           = var.metrics_paths
 
   context = module.this.context
 }
@@ -78,4 +79,11 @@ module "cloudtrail" {
   cloud_watch_logs_role_arn  = aws_iam_role.cloudtrail_cloudwatch_events_role.arn
 
   context = module.this.context
+}
+
+## This is the module being used
+module "cis_alarms" {
+  source         = "../../"
+  log_group_name = aws_cloudwatch_log_group.default.name
+  metrics = module.metric_configs.map_configs
 }

@@ -59,5 +59,6 @@ variable "metrics" {
     alarm_threshold = string
     alarm_description = string
   }))
+  default     = {}
   description = "The cloudwatch metrics and corresponding alarm definitions"
 }
