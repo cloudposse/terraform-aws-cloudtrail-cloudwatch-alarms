@@ -104,6 +104,8 @@ usage: |-
   ```
   For detailed usage which includes setting up cloudtrail, cloudwatch logs, roles, policies, and the s3 bucket - as well as using this module see the [example directory](./examples/complete)
 
+  For aditional CIS rules and controls https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-cis-controls.html#securityhub-cis-controls-3.8
+
 
 # Example usage
 examples: |-
