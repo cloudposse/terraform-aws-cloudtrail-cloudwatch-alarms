@@ -85,5 +85,5 @@ module "cloudtrail" {
 module "cis_alarms" {
   source         = "../../"
   log_group_name = aws_cloudwatch_log_group.default.name
-  metrics = module.metric_configs.map_configs
+  metrics        = module.metric_configs.map_configs
 }
