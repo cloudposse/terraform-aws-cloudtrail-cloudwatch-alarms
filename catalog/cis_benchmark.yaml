@@ -1,7 +1,9 @@
+# https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-cis-controls.html#securityhub-cis-controls-3.8
 
+#3.1 – Ensure a log metric filter and alarm exist for unauthorized API calls 
 authorization-failure-count:
   name: "AuthorizationFailureCount"
-  filter_pattern: "{ ($.errorCode = \"*UnauthorizedOperation\") || ($.errorCode = \"AccessDenied*\") }"
+  filter_pattern: "{($.errorCode = "*UnauthorizedOperation") || ($.errorCode = "AccessDenied*")}"
   metric_namespace: "CISBenchmark"
   alarm_description: "Alarms when an unauthorized API call is made."
   metric_value: "1"
@@ -12,11 +14,12 @@ authorization-failure-count:
   alarm_treat_missing_data: "notBreaching"
   alarm_threshold: "1"
 
-s3-bucket-activity-event-count:
-  name: "S3BucketActivityEventCount"
-  filter_pattern: "{ ($.eventSource = s3.amazonaws.com) && (($.eventName = PutBucketAcl) || ($.eventName = PutBucketPolicy) || ($.eventName = PutBucketCors) || ($.eventName = PutBucketLifecycle) || ($.eventName = PutBucketReplication) || ($.eventName = DeleteBucketPolicy) || ($.eventName = DeleteBucketCors) || ($.eventName = DeleteBucketLifecycle) || ($.eventName = DeleteBucketReplication)) }"
+#3.2 – Ensure a log metric filter and alarm exist for AWS Management Console sign-in without MFA 
+console-signin-without-mfa-count:
+  name: "ConsoleSignInWithoutMfaCount"
+  filter_pattern: "{ ($.eventName = "ConsoleLogin") && ($.additionalEventData.MFAUsed != "Yes") }"
   metric_namespace: "CISBenchmark"
-  alarm_description: "Alarms when an API call is made to S3 to put or delete a Bucket, Bucket Policy or Bucket ACL."
+  alarm_description: "Alarms when a user logs into the console without MFA."
   metric_value: "1"
   alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
   alarm_evaluation_periods: "1"
@@ -25,11 +28,12 @@ s3-bucket-activity-event-count:
   alarm_treat_missing_data: "notBreaching"
   alarm_threshold: "1"
 
-security-group-event-count:
-  name: "SecurityGroupEventCount"
-  filter_pattern: "{ ($.eventName = AuthorizeSecurityGroupIngress) || ($.eventName = AuthorizeSecurityGroupEgress) || ($.eventName = RevokeSecurityGroupIngress) || ($.eventName = RevokeSecurityGroupEgress) || ($.eventName = CreateSecurityGroup) || ($.eventName = DeleteSecurityGroup) }"
+#3.3 – Ensure a log metric filter and alarm exist for usage of "root" account 
+root-account-usage-count:
+  name: "RootAccountUsageCount"
+  filter_pattern: "{ $.userIdentity.type = "Root" && $.userIdentity.invokedBy NOT EXISTS && $.eventType != "AwsServiceEvent" }"
   metric_namespace: "CISBenchmark"
-  alarm_description: "Alarms when an API call is made to create, update or delete a Security Group."
+  alarm_description: "Alarms when a root account usage is detected."
   metric_value: "1"
   alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
   alarm_evaluation_periods: "1"
@@ -38,97 +42,7 @@ security-group-event-count:
   alarm_treat_missing_data: "notBreaching"
   alarm_threshold: "1"
 
-network-acl-event-count:
-  name: "NetworkAclEventCount"
-  filter_pattern: "{ ($.eventName = CreateNetworkAcl) || ($.eventName = CreateNetworkAclEntry) || ($.eventName = DeleteNetworkAcl) || ($.eventName = DeleteNetworkAclEntry) || ($.eventName = ReplaceNetworkAclEntry) || ($.eventName = ReplaceNetworkAclAssociation) }"
-  metric_namespace: "CISBenchmark"
-  alarm_description: "Alarms when an API call is made to create, update or delete a Network ACL."
-  metric_value: "1"
-  alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
-  alarm_evaluation_periods: "1"
-  alarm_period: "300"
-  alarm_statistic: "Sum"
-  alarm_treat_missing_data: "notBreaching"
-  alarm_threshold: "1"
-
-gateway-event-count:
-  name: "GatewayEventCount"
-  filter_pattern: "{ ($.eventName = CreateCustomerGateway) || ($.eventName = DeleteCustomerGateway) || ($.eventName = AttachInternetGateway) || ($.eventName = CreateInternetGateway) || ($.eventName = DeleteInternetGateway) || ($.eventName = DetachInternetGateway) }"
-  metric_namespace: "CISBenchmark"
-  alarm_description: "Alarms when an API call is made to create, update or delete a Customer or Internet Gateway."
-  metric_value: "1"
-  alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
-  alarm_evaluation_periods: "1"
-  alarm_period: "300"
-  alarm_statistic: "Sum"
-  alarm_treat_missing_data: "notBreaching"
-  alarm_threshold: "1"
-
-vpc-event-count:
-  name: "VpcEventCount"
-  filter_pattern: "{ ($.eventName = CreateVpc) || ($.eventName = DeleteVpc) || ($.eventName = ModifyVpcAttribute) || ($.eventName = AcceptVpcPeeringConnection) || ($.eventName = CreateVpcPeeringConnection) || ($.eventName = DeleteVpcPeeringConnection) || ($.eventName = RejectVpcPeeringConnection) || ($.eventName = AttachClassicLinkVpc) || ($.eventName = DetachClassicLinkVpc) || ($.eventName = DisableVpcClassicLink) || ($.eventName = EnableVpcClassicLink) }"
-  metric_namespace: "CISBenchmark"
-  alarm_description: "Alarms when an API call is made to create, update or delete a VPC, VPC peering connection or VPC connection to classic."
-  metric_value: "1"
-  alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
-  alarm_evaluation_periods: "1"
-  alarm_period: "300"
-  alarm_statistic: "Sum"
-  alarm_treat_missing_data: "notBreaching"
-  alarm_threshold: "1"
-
-ec2-instance-event-count:
-  name: "EC2InstanceEventCount"
-  filter_pattern: "{ ($.eventName = RunInstances) || ($.eventName = RebootInstances) || ($.eventName = StartInstances) || ($.eventName = StopInstances) || ($.eventName = TerminateInstances) }"
-  metric_namespace: "CISBenchmark"
-  alarm_description: "Alarms when an API call is made to create, terminate, start, stop or reboot an EC2 instance."
-  metric_value: "1"
-  alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
-  alarm_evaluation_periods: "1"
-  alarm_period: "300"
-  alarm_statistic: "Sum"
-  alarm_treat_missing_data: "notBreaching"
-  alarm_threshold: "1"
-
-ec2-large-instance-event-count:
-  name: "EC2LargeInstanceEventCount"
-  filter_pattern: "{ ($.eventName = RunInstances) && (($.requestParameters.instanceType = *.8xlarge) || ($.requestParameters.instanceType = *.4xlarge) || ($.requestParameters.instanceType = *.16xlarge) || ($.requestParameters.instanceType = *.10xlarge) || ($.requestParameters.instanceType = *.12xlarge) || ($.requestParameters.instanceType = *.24xlarge)) }"
-  metric_namespace: "CISBenchmark"
-  alarm_description: "Alarms when an API call is made to create, terminate, start, stop or reboot a 4x-large or greater EC2 instance."
-  metric_value: "1"
-  alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
-  alarm_evaluation_periods: "1"
-  alarm_period: "300"
-  alarm_statistic: "Sum"
-  alarm_treat_missing_data: "notBreaching"
-  alarm_threshold: "1"
-
-cloud-trail-event-count:
-  name: "CloudTrailEventCount"
-  filter_pattern: "{ ($.eventName = CreateTrail) || ($.eventName = UpdateTrail) || ($.eventName = DeleteTrail) || ($.eventName = StartLogging) || ($.eventName = StopLogging) }"
-  metric_namespace: "CISBenchmark"
-  alarm_description: "Alarms when an API call is made to create, update or delete a .cloudtrail. trail, or to start or stop logging to a trail."
-  metric_value: "1"
-  alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
-  alarm_evaluation_periods: "1"
-  alarm_period: "300"
-  alarm_statistic: "Sum"
-  alarm_treat_missing_data: "notBreaching"
-  alarm_threshold: "1"
-
-console-sign-in-failure-count:
-  name: "ConsoleSignInFailureCount"
-  filter_pattern: "{ ($.eventName = ConsoleLogin) && ($.errorMessage = \"Failed authentication\") }"
-  metric_namespace: "CISBenchmark"
-  alarm_description: "Alarms when an unauthenticated API call is made to sign into the console."
-  alarm_threshold: "3"
-  metric_value: "1"
-  alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
-  alarm_evaluation_periods: "1"
-  alarm_period: "300"
-  alarm_statistic: "Sum"
-  alarm_treat_missing_data: "notBreaching"
- 
+#3.4 – Ensure a log metric filter and alarm exist for IAM policy changes 
 iam-policy-event-count:
   name: "IAMPolicyEventCount"
   filter_pattern: "{ ($.eventName = DeleteGroupPolicy) || ($.eventName = DeleteRolePolicy) ||($.eventName=DeleteUserPolicy)||($.eventName=PutGroupPolicy)||($.eventName=PutRolePolicy)||($.eventName=PutUserPolicy)||($.eventName=CreatePolicy)||($.eventName=DeletePolicy)||($.eventName=CreatePolicyVersion)||($.eventName=DeletePolicyVersion)||($.eventName=AttachRolePolicy)||($.eventName=DetachRolePolicy)||($.eventName=AttachUserPolicy)||($.eventName=DetachUserPolicy)||($.eventName=AttachGroupPolicy)||($.eventName=DetachGroupPolicy)}"
@@ -142,11 +56,12 @@ iam-policy-event-count:
   alarm_statistic: "Sum"
   alarm_treat_missing_data: "notBreaching"
 
-console-signin-without-mfa-count:
-  name: "ConsoleSignInWithoutMfaCount"
-  filter_pattern: "{ ($.eventName = \"ConsoleLogin\") && ($.additionalEventData.MFAUsed != \"Yes\") }"
+#3.5 – Ensure a log metric filter and alarm exist for CloudTrail configuration changes 
+cloud-trail-event-count:
+  name: "CloudTrailEventCount"
+  filter_pattern: "{ ($.eventName = CreateTrail) || ($.eventName = UpdateTrail) || ($.eventName = DeleteTrail) || ($.eventName = StartLogging) || ($.eventName = StopLogging) }"
   metric_namespace: "CISBenchmark"
-  alarm_description: "Alarms when a user logs into the console without MFA."
+  alarm_description: "Alarms when an API call is made to create, update or delete a .cloudtrail. trail, or to start or stop logging to a trail."
   metric_value: "1"
   alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
   alarm_evaluation_periods: "1"
@@ -155,19 +70,21 @@ console-signin-without-mfa-count:
   alarm_treat_missing_data: "notBreaching"
   alarm_threshold: "1"
 
-root-account-usage-count:
-  name: "RootAccountUsageCount"
-  filter_pattern: "{ $.userIdentity.type = \"Root\" && $.userIdentity.invokedBy NOT EXISTS && $.eventType != \"AwsServiceEvent\" }"
+#3.6 – Ensure a log metric filter and alarm exist for AWS Management Console authentication failures 
+console-sign-in-failure-count:
+  name: "ConsoleSignInFailureCount"
+  filter_pattern: "{ ($.eventName = ConsoleLogin) && ($.errorMessage = "Failed authentication") }"
   metric_namespace: "CISBenchmark"
-  alarm_description: "Alarms when a root account usage is detected."
+  alarm_description: "Alarms when an unauthenticated API call is made to sign into the console."
+  alarm_threshold: "3"
   metric_value: "1"
   alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
   alarm_evaluation_periods: "1"
   alarm_period: "300"
   alarm_statistic: "Sum"
   alarm_treat_missing_data: "notBreaching"
-  alarm_threshold: "1"
 
+#3.7 – Ensure a log metric filter and alarm exist for disabling or scheduled deletion of customer created CMKs 
 kms-key-pending-deletion-error-count:
   name: "KMSKeyPendingDeletionErrorCount"
   filter_pattern: "{($.eventSource = kms.amazonaws.com) && (($.eventName=DisableKey)||($.eventName=ScheduleKeyDeletion))}"
@@ -181,6 +98,21 @@ kms-key-pending-deletion-error-count:
   alarm_treat_missing_data: "notBreaching"
   alarm_threshold: "1"
 
+#3.8 – Ensure a log metric filter and alarm exist for S3 bucket policy changes 
+s3-bucket-policy-event-count:
+  name: "S3BucketPolicyEventCount"
+  filter_pattern: "{ ($.eventSource = s3.amazonaws.com) && (($.eventName = PutBucketAcl) || ($.eventName = PutBucketPolicy) || ($.eventName = PutBucketCors) || ($.eventName = PutBucketLifecycle) || ($.eventName = PutBucketReplication) || ($.eventName = DeleteBucketPolicy) || ($.eventName = DeleteBucketCors) || ($.eventName = DeleteBucketLifecycle) || ($.eventName = DeleteBucketReplication)) }"
+  metric_namespace: "CISBenchmark"
+  alarm_description: "Alarms when an API call is made to S3 to put or delete a Bucket Lifecycle Policy, Bucket Policy or Bucket ACL."
+  metric_value: "1"
+  alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
+  alarm_evaluation_periods: "1"
+  alarm_period: "300"
+  alarm_statistic: "Sum"
+  alarm_treat_missing_data: "notBreaching"
+  alarm_threshold: "1"
+
+#3.9 – Ensure a log metric filter and alarm exist for AWS Config configuration changes
 aws-config-change-count:
   name: "AWSConfigChangeCount"
   filter_pattern: "{($.eventSource = config.amazonaws.com) && (($.eventName=StopConfigurationRecorder)||($.eventName=DeleteDeliveryChannel)||($.eventName=PutDeliveryChannel)||($.eventName=PutConfigurationRecorder))}"
@@ -194,6 +126,49 @@ aws-config-change-count:
   alarm_treat_missing_data: "notBreaching"
   alarm_threshold: "1"
 
+#3.10 – Ensure a log metric filter and alarm exist for security group changes
+security-group-event-count:
+  name: "SecurityGroupEventCount"
+  filter_pattern: "{ ($.eventName = AuthorizeSecurityGroupIngress) || ($.eventName = AuthorizeSecurityGroupEgress) || ($.eventName = RevokeSecurityGroupIngress) || ($.eventName = RevokeSecurityGroupEgress) || ($.eventName = CreateSecurityGroup) || ($.eventName = DeleteSecurityGroup) }"
+  metric_namespace: "CISBenchmark"
+  alarm_description: "Alarms when an API call is made to create, update or delete a Security Group."
+  metric_value: "1"
+  alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
+  alarm_evaluation_periods: "1"
+  alarm_period: "300"
+  alarm_statistic: "Sum"
+  alarm_treat_missing_data: "notBreaching"
+  alarm_threshold: "1"
+
+#3.11 – Ensure a log metric filter and alarm exist for changes to Network Access Control Lists (NACL)
+network-acl-event-count:
+  name: "NetworkAclEventCount"
+  filter_pattern: "{ ($.eventName = CreateNetworkAcl) || ($.eventName = CreateNetworkAclEntry) || ($.eventName = DeleteNetworkAcl) || ($.eventName = DeleteNetworkAclEntry) || ($.eventName = ReplaceNetworkAclEntry) || ($.eventName = ReplaceNetworkAclAssociation) }"
+  metric_namespace: "CISBenchmark"
+  alarm_description: "Alarms when an API call is made to create, update or delete a Network ACL."
+  metric_value: "1"
+  alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
+  alarm_evaluation_periods: "1"
+  alarm_period: "300"
+  alarm_statistic: "Sum"
+  alarm_treat_missing_data: "notBreaching"
+  alarm_threshold: "1"
+
+#3.12 – Ensure a log metric filter and alarm exist for changes to network gateways
+gateway-event-count:
+  name: "GatewayEventCount"
+  filter_pattern: "{ ($.eventName = CreateCustomerGateway) || ($.eventName = DeleteCustomerGateway) || ($.eventName = AttachInternetGateway) || ($.eventName = CreateInternetGateway) || ($.eventName = DeleteInternetGateway) || ($.eventName = DetachInternetGateway) }"
+  metric_namespace: "CISBenchmark"
+  alarm_description: "Alarms when an API call is made to create, update or delete a Customer or Internet Gateway."
+  metric_value: "1"
+  alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
+  alarm_evaluation_periods: "1"
+  alarm_period: "300"
+  alarm_statistic: "Sum"
+  alarm_treat_missing_data: "notBreaching"
+  alarm_threshold: "1"
+
+#3.13 – Ensure a log metric filter and alarm exist for route table changes
 route-table-changes-count:
   name: "RouteTableChangesCount"
   filter_pattern: "{ ($.eventName = CreateRoute) || ($.eventName = CreateRouteTable) || ($.eventName = ReplaceRoute) || ($.eventName = ReplaceRouteTableAssociation) || ($.eventName = DeleteRouteTable) || ($.eventName = DeleteRoute) || ($.eventName = DisassociateRouteTable) }"
@@ -206,3 +181,20 @@ route-table-changes-count:
   alarm_statistic: "Sum"
   alarm_treat_missing_data: "notBreaching"
   alarm_threshold: "1"
+
+#3.14 – Ensure a log metric filter and alarm exist for VPC changes
+vpc-event-count:
+  name: "VpcEventCount"
+  filter_pattern: "{ ($.eventName = CreateVpc) || ($.eventName = DeleteVpc) || ($.eventName = ModifyVpcAttribute) || ($.eventName = AcceptVpcPeeringConnection) || ($.eventName = CreateVpcPeeringConnection) || ($.eventName = DeleteVpcPeeringConnection) || ($.eventName = RejectVpcPeeringConnection) || ($.eventName = AttachClassicLinkVpc) || ($.eventName = DetachClassicLinkVpc) || ($.eventName = DisableVpcClassicLink) || ($.eventName = EnableVpcClassicLink) }"
+  metric_namespace: "CISBenchmark"
+  alarm_description: "Alarms when an API call is made to create, update or delete a VPC, VPC peering connection or VPC connection to classic."
+  metric_value: "1"
+  alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
+  alarm_evaluation_periods: "1"
+  alarm_period: "300"
+  alarm_statistic: "Sum"
+  alarm_treat_missing_data: "notBreaching"
+  alarm_threshold: "1"
+
+
+
