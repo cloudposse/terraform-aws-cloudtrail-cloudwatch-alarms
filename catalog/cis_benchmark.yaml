@@ -1,6 +1,5 @@
 # https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-cis-controls.html#securityhub-cis-controls-3.8
-
-#3.1 – Ensure a log metric filter and alarm exist for unauthorized API calls 
+# 3.1 – Ensure a log metric filter and alarm exist for unauthorized API calls 
 authorization-failure-count:
   name: "AuthorizationFailureCount"
   filter_pattern: "{($.errorCode = \"*UnauthorizedOperation\") || ($.errorCode = \"AccessDenied*\")}"
@@ -14,10 +13,10 @@ authorization-failure-count:
   alarm_treat_missing_data: "notBreaching"
   alarm_threshold: "1"
 
-#3.2 – Ensure a log metric filter and alarm exist for AWS Management Console sign-in without MFA 
+# 3.2 – Ensure a log metric filter and alarm exist for AWS Management Console sign-in without MFA 
 console-signin-without-mfa-count:
   name: "ConsoleSignInWithoutMfaCount"
-  filter_pattern: "{ ($.eventName = "ConsoleLogin") && ($.additionalEventData.MFAUsed != "Yes") }"
+  filter_pattern: "{ ($.eventName = \"ConsoleLogin\") && ($.additionalEventData.MFAUsed != \"Yes\") }"
   metric_namespace: "CISBenchmark"
   alarm_description: "Alarms when a user logs into the console without MFA."
   metric_value: "1"
@@ -28,10 +27,10 @@ console-signin-without-mfa-count:
   alarm_treat_missing_data: "notBreaching"
   alarm_threshold: "1"
 
-#3.3 – Ensure a log metric filter and alarm exist for usage of "root" account 
+# 3.3 – Ensure a log metric filter and alarm exist for usage of "root" account 
 root-account-usage-count:
   name: "RootAccountUsageCount"
-  filter_pattern: "{ $.userIdentity.type = "Root" && $.userIdentity.invokedBy NOT EXISTS && $.eventType != "AwsServiceEvent" }"
+  filter_pattern: "{ $.userIdentity.type = \"Root\" && $.userIdentity.invokedBy NOT EXISTS && $.eventType != \"AwsServiceEvent\" }"
   metric_namespace: "CISBenchmark"
   alarm_description: "Alarms when a root account usage is detected."
   metric_value: "1"
@@ -73,7 +72,7 @@ cloud-trail-event-count:
 #3.6 – Ensure a log metric filter and alarm exist for AWS Management Console authentication failures 
 console-sign-in-failure-count:
   name: "ConsoleSignInFailureCount"
-  filter_pattern: "{ ($.eventName = ConsoleLogin) && ($.errorMessage = "Failed authentication") }"
+  filter_pattern: "{ ($.eventName = ConsoleLogin) && ($.errorMessage = \"Failed authentication\") }"
   metric_namespace: "CISBenchmark"
   alarm_description: "Alarms when an unauthenticated API call is made to sign into the console."
   alarm_threshold: "3"
