@@ -2,11 +2,6 @@ provider "aws" {
   region = var.region
 }
 
-## This is the module being used
-module "cis_alarms" {
-  source         = "../../"
-  log_group_name = aws_cloudwatch_log_group.default.name
-}
 
 ## Everything after this is standard cloudtrail setup
 data "aws_caller_identity" "current" {}
@@ -60,8 +55,17 @@ resource "aws_iam_role_policy" "policy" {
   role   = aws_iam_role.cloudtrail_cloudwatch_events_role.id
 }
 
+module "metric_configs" {
+  source  = "cloudposse/config/yaml"
+  version = "0.6.0"
+
+  map_config_local_base_path = path.module
+  map_config_paths           = var.metrics_paths
+
+  context = module.this.context
+}
+
 module "cloudtrail" {
-  # https://github.com/cloudposse/terraform-aws-cloudtrail
   source                        = "cloudposse/cloudtrail/aws"
   version                       = "0.17.0"
   enable_log_file_validation    = true
@@ -75,4 +79,11 @@ module "cloudtrail" {
   cloud_watch_logs_role_arn  = aws_iam_role.cloudtrail_cloudwatch_events_role.arn
 
   context = module.this.context
+}
+
+## This is the module being used
+module "cis_alarms" {
+  source         = "../../"
+  log_group_name = aws_cloudwatch_log_group.default.name
+  metrics        = module.metric_configs.map_configs
 }

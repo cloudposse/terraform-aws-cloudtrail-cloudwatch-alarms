@@ -9,34 +9,35 @@ locals {
 
   metric_namespace = var.metric_namespace
   metric_value     = "1"
+  metrics_index    = values(var.metrics)
 }
 
 resource "aws_cloudwatch_log_metric_filter" "default" {
-  count          = module.this.enabled ? length(local.metrics) : 0
-  name           = join(module.this.delimiter, [local.metrics[count.index].name, "filter"])
-  pattern        = local.metrics[count.index].filter_pattern
+  for_each       = module.this.enabled ? var.metrics : {}
+  name           = join(module.this.delimiter, [each.value.name, "filter"])
+  pattern        = each.value.filter_pattern
   log_group_name = var.log_group_name
 
   metric_transformation {
-    name      = local.metrics[count.index].name
-    namespace = local.metric_namespace
-    value     = local.metric_value
+    name      = each.value.name
+    namespace = each.value.metric_namespace
+    value     = each.value.metric_value
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "default" {
-  count               = module.this.enabled ? length(local.metrics) : 0
-  alarm_name          = join(module.this.delimiter, [local.metrics[count.index].name, "alarm"])
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = "1"
-  metric_name         = local.metrics[count.index].name
-  namespace           = local.metric_namespace
+  for_each            = module.this.enabled ? var.metrics : {}
+  alarm_name          = join(module.this.delimiter, [each.value.name, "alarm"])
+  comparison_operator = each.value.alarm_comparison_operator
+  evaluation_periods  = each.value.alarm_evaluation_periods
+  metric_name         = each.value.name
+  namespace           = each.value.metric_namespace
   # Period is in seconds (300 seconds == 5 mins)
-  period             = "300"
-  statistic          = "Sum"
-  treat_missing_data = "notBreaching"
-  threshold          = local.metrics[count.index].name == "ConsoleSignInFailureCount" ? "3" : "1"
-  alarm_description  = local.metrics[count.index].description
+  period             = each.value.alarm_period
+  statistic          = each.value.alarm_statistic
+  treat_missing_data = each.value.alarm_treat_missing_data
+  threshold          = each.value.alarm_threshold
+  alarm_description  = each.value.alarm_description
   alarm_actions      = local.endpoints
   tags               = module.this.tags
 }
@@ -55,8 +56,8 @@ resource "aws_cloudwatch_dashboard" "combined" {
         height = 16
         properties = {
           metrics = [
-            for metric in local.metrics :
-            [local.metric_namespace, metric.name]
+            for metric in var.metrics :
+            [metric.metric_namespace, metric.name]
           ]
           period = 300
           stat   = "Sum"
@@ -81,7 +82,7 @@ resource "aws_cloudwatch_dashboard" "individual" {
 
   dashboard_body = jsonencode({
     widgets = [
-      for index, metric in local.metrics :
+      for index, metric in local.metrics_index :
       {
         type   = "metric"
         x      = local.layout_x[index]
@@ -90,7 +91,7 @@ resource "aws_cloudwatch_dashboard" "individual" {
         height = 6
         properties = {
           metrics = [
-            [local.metric_namespace, metric.name]
+            [metric.metric_namespace, metric.name]
           ]
           period = 300
           stat   = "Sum"

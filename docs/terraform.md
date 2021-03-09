@@ -12,6 +12,25 @@
 |------|---------|
 | aws | >= 2.0 |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| this | cloudposse/label/null | 0.24.1 |
+
+## Resources
+
+| Name |
+|------|
+| [aws_caller_identity](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) |
+| [aws_cloudwatch_dashboard](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_dashboard) |
+| [aws_cloudwatch_log_metric_filter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_metric_filter) |
+| [aws_cloudwatch_metric_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) |
+| [aws_iam_policy_document](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) |
+| [aws_region](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) |
+| [aws_sns_topic](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic) |
+| [aws_sns_topic_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic_policy) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -32,6 +51,7 @@
 | log\_group\_name | The cloudtrail cloudwatch log group name | `string` | n/a | yes |
 | log\_group\_region | The log group region that should be monitored for unauthorised AWS API Access. Current region used if none provided. | `string` | `""` | no |
 | metric\_namespace | A namespace for grouping all of the metrics together | `string` | `"CISBenchmark"` | no |
+| metrics | The cloudwatch metrics and corresponding alarm definitions | <pre>map(object({<br>    name                      = string<br>    filter_pattern            = string<br>    metric_namespace          = string<br>    metric_value              = string<br>    alarm_comparison_operator = string<br>    alarm_evaluation_periods  = string<br>    alarm_period              = string<br>    alarm_statistic           = string<br>    alarm_treat_missing_data  = string<br>    alarm_threshold           = string<br>    alarm_description         = string<br>  }))</pre> | `{}` | no |
 | name | Solution name, e.g. 'app' or 'jenkins' | `string` | `null` | no |
 | namespace | Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp' | `string` | `null` | no |
 | regex\_replace\_chars | Regex to replace chars with empty string in `namespace`, `environment`, `stage` and `name`.<br>If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits. | `string` | `null` | no |
@@ -47,5 +67,4 @@
 | dashboard\_combined | URL to CloudWatch Combined Metric Dashboard |
 | dashboard\_individual | URL to CloudWatch Individual Metric Dashboard |
 | sns\_topic\_arn | The ARN of the SNS topic used |
-
 <!-- markdownlint-restore -->

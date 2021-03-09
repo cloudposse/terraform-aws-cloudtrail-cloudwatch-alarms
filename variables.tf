@@ -44,3 +44,21 @@ variable "kms_master_key_id" {
   description = "The ID of an AWS-managed customer master key (CMK) for Amazon SNS or a custom CMK"
   default     = "alias/aws/sns"
 }
+
+variable "metrics" {
+  type = map(object({
+    name                      = string
+    filter_pattern            = string
+    metric_namespace          = string
+    metric_value              = string
+    alarm_comparison_operator = string
+    alarm_evaluation_periods  = string
+    alarm_period              = string
+    alarm_statistic           = string
+    alarm_treat_missing_data  = string
+    alarm_threshold           = string
+    alarm_description         = string
+  }))
+  default     = {}
+  description = "The cloudwatch metrics and corresponding alarm definitions"
+}
