@@ -14,7 +14,7 @@ locals {
 
 resource "aws_cloudwatch_log_metric_filter" "default" {
   for_each       = module.this.enabled ? var.metrics : {}
-  name           = join(module.this.delimiter, [each.value.name, "filter"])
+  name           = each.value.metric_name
   pattern        = each.value.filter_pattern
   log_group_name = var.log_group_name
 
@@ -27,19 +27,18 @@ resource "aws_cloudwatch_log_metric_filter" "default" {
 
 resource "aws_cloudwatch_metric_alarm" "default" {
   for_each            = module.this.enabled ? var.metrics : {}
-  alarm_name          = join(module.this.delimiter, [each.value.name, "alarm"])
+  alarm_name          = each.value.alarm_name
   comparison_operator = each.value.alarm_comparison_operator
   evaluation_periods  = each.value.alarm_evaluation_periods
   metric_name         = each.value.name
   namespace           = each.value.metric_namespace
-  # Period is in seconds (300 seconds == 5 mins)
-  period             = each.value.alarm_period
-  statistic          = each.value.alarm_statistic
-  treat_missing_data = each.value.alarm_treat_missing_data
-  threshold          = each.value.alarm_threshold
-  alarm_description  = each.value.alarm_description
-  alarm_actions      = local.endpoints
-  tags               = module.this.tags
+  period              = each.value.alarm_period
+  statistic           = each.value.alarm_statistic
+  treat_missing_data  = each.value.alarm_treat_missing_data
+  threshold           = each.value.alarm_threshold
+  alarm_description   = each.value.alarm_description
+  alarm_actions       = local.endpoints
+  tags                = module.this.tags
 }
 
 resource "aws_cloudwatch_dashboard" "combined" {

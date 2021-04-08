@@ -8,11 +8,10 @@ resource "aws_sns_topic" "default" {
 }
 
 resource "aws_sns_topic_policy" "default" {
-  count  = module.this.enabled != true || var.sns_policy_enabled != true || var.sns_topic_arn != "" ? 0 : 1
+  count  = module.this.enabled == true && var.sns_policy_enabled == true ? 1 : 0
   arn    = local.sns_topic_arn
   policy = data.aws_iam_policy_document.sns_topic_policy.json
 }
-
 data "aws_iam_policy_document" "sns_topic_policy" {
   policy_id = "__default_policy_ID"
 
