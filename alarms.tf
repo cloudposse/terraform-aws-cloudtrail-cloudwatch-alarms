@@ -56,7 +56,7 @@ resource "aws_cloudwatch_dashboard" "combined" {
         properties = {
           metrics = [
             for metric in var.metrics :
-            [metric.metric_namespace, metric.name]
+            [metric.metric_namespace, metric.metric_name]
           ]
           period = 300
           stat   = "Sum"
