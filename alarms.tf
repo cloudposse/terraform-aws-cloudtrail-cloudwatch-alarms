@@ -90,12 +90,12 @@ resource "aws_cloudwatch_dashboard" "individual" {
         height = 6
         properties = {
           metrics = [
-            [metric.metric_namespace, metric.name]
+            [metric.metric_namespace, metric.metric_name]
           ]
           period = 300
           stat   = "Sum"
           region = local.log_group_region
-          title  = metric.name
+          title  = metric.metric_name
         }
       }
     ]
