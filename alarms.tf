@@ -19,7 +19,7 @@ resource "aws_cloudwatch_log_metric_filter" "default" {
   log_group_name = var.log_group_name
 
   metric_transformation {
-    name      = each.value.name
+    name      = each.value.metric_name
     namespace = each.value.metric_namespace
     value     = each.value.metric_value
   }
@@ -30,7 +30,7 @@ resource "aws_cloudwatch_metric_alarm" "default" {
   alarm_name          = each.value.alarm_name
   comparison_operator = each.value.alarm_comparison_operator
   evaluation_periods  = each.value.alarm_evaluation_periods
-  metric_name         = each.value.name
+  metric_name         = each.value.metric_name
   namespace           = each.value.metric_namespace
   period              = each.value.alarm_period
   statistic           = each.value.alarm_statistic
