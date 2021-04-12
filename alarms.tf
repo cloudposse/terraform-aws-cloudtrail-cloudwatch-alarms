@@ -2,10 +2,11 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-  alert_for        = "CloudTrailBreach"
-  sns_topic_arn    = var.sns_topic_arn == "" && (length(aws_sns_topic.default) == 1 ? aws_sns_topic.default[0].arn : "") != "" ? aws_sns_topic.default[0].arn : var.sns_topic_arn
-  endpoints        = distinct(compact(concat([local.sns_topic_arn], var.additional_endpoint_arns)))
-  log_group_region = var.log_group_region == "" ? data.aws_region.current.name : var.log_group_region
+  alert_for             = "CloudTrailBreach"
+  is_creating_sns_topic = var.sns_topic_arn == null && length(aws_sns_topic.default) == 1
+  sns_topic_arn         = local.is_creating_sns_topic ? aws_sns_topic.default[0].arn : var.sns_topic_arn
+  endpoints             = distinct(compact(concat([local.sns_topic_arn], var.additional_endpoint_arns)))
+  log_group_region      = var.log_group_region == "" ? data.aws_region.current.name : var.log_group_region
 
   metric_namespace = var.metric_namespace
   metric_value     = "1"
@@ -14,12 +15,12 @@ locals {
 
 resource "aws_cloudwatch_log_metric_filter" "default" {
   for_each       = module.this.enabled ? var.metrics : {}
-  name           = join(module.this.delimiter, [each.value.name, "filter"])
+  name           = each.value.metric_name
   pattern        = each.value.filter_pattern
   log_group_name = var.log_group_name
 
   metric_transformation {
-    name      = each.value.name
+    name      = each.value.metric_name
     namespace = each.value.metric_namespace
     value     = each.value.metric_value
   }
@@ -27,19 +28,18 @@ resource "aws_cloudwatch_log_metric_filter" "default" {
 
 resource "aws_cloudwatch_metric_alarm" "default" {
   for_each            = module.this.enabled ? var.metrics : {}
-  alarm_name          = join(module.this.delimiter, [each.value.name, "alarm"])
+  alarm_name          = each.value.alarm_name
   comparison_operator = each.value.alarm_comparison_operator
   evaluation_periods  = each.value.alarm_evaluation_periods
-  metric_name         = each.value.name
+  metric_name         = each.value.metric_name
   namespace           = each.value.metric_namespace
-  # Period is in seconds (300 seconds == 5 mins)
-  period             = each.value.alarm_period
-  statistic          = each.value.alarm_statistic
-  treat_missing_data = each.value.alarm_treat_missing_data
-  threshold          = each.value.alarm_threshold
-  alarm_description  = each.value.alarm_description
-  alarm_actions      = local.endpoints
-  tags               = module.this.tags
+  period              = each.value.alarm_period
+  statistic           = each.value.alarm_statistic
+  treat_missing_data  = each.value.alarm_treat_missing_data
+  threshold           = each.value.alarm_threshold
+  alarm_description   = each.value.alarm_description
+  alarm_actions       = local.endpoints
+  tags                = module.this.tags
 }
 
 resource "aws_cloudwatch_dashboard" "combined" {
@@ -57,7 +57,7 @@ resource "aws_cloudwatch_dashboard" "combined" {
         properties = {
           metrics = [
             for metric in var.metrics :
-            [metric.metric_namespace, metric.name]
+            [metric.metric_namespace, metric.metric_name]
           ]
           period = 300
           stat   = "Sum"
@@ -91,12 +91,12 @@ resource "aws_cloudwatch_dashboard" "individual" {
         height = 6
         properties = {
           metrics = [
-            [metric.metric_namespace, metric.name]
+            [metric.metric_namespace, metric.metric_name]
           ]
           period = 300
           stat   = "Sum"
           region = local.log_group_region
-          title  = metric.name
+          title  = metric.metric_name
         }
       }
     ]

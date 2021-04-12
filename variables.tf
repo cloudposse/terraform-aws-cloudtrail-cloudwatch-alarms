@@ -6,7 +6,7 @@ variable "additional_endpoint_arns" {
 
 variable "sns_topic_arn" {
   description = "An SNS topic ARN that has already been created. Its policy must already allow access from CloudWatch Alarms, or set `add_sns_policy` to `true`"
-  default     = ""
+  default     = null
   type        = string
 }
 
@@ -47,10 +47,11 @@ variable "kms_master_key_id" {
 
 variable "metrics" {
   type = map(object({
-    name                      = string
+    metric_name               = string
     filter_pattern            = string
     metric_namespace          = string
     metric_value              = string
+    alarm_name                = string
     alarm_comparison_operator = string
     alarm_evaluation_periods  = string
     alarm_period              = string

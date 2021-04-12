@@ -57,7 +57,7 @@ resource "aws_iam_role_policy" "policy" {
 
 module "metric_configs" {
   source  = "cloudposse/config/yaml"
-  version = "0.6.0"
+  version = "0.7.0"
 
   map_config_local_base_path = path.module
   map_config_paths           = var.metrics_paths
