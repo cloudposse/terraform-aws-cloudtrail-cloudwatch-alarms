@@ -2,10 +2,11 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-  alert_for        = "CloudTrailBreach"
-  sns_topic_arn    = var.sns_topic_arn == "" && (length(aws_sns_topic.default) == 1 ? aws_sns_topic.default[0].arn : "") != "" ? aws_sns_topic.default[0].arn : var.sns_topic_arn
-  endpoints        = distinct(compact(concat([local.sns_topic_arn], var.additional_endpoint_arns)))
-  log_group_region = var.log_group_region == "" ? data.aws_region.current.name : var.log_group_region
+  alert_for             = "CloudTrailBreach"
+  is_creating_sns_topic = var.sns_topic_arn == null && length(aws_sns_topic.default) == 1
+  sns_topic_arn         = local.is_creating_sns_topic ? local.aws_sns_topic.default[0].arn : var.sns_topic_arn
+  endpoints             = distinct(compact(concat([local.sns_topic_arn], var.additional_endpoint_arns)))
+  log_group_region      = var.log_group_region == "" ? data.aws_region.current.name : var.log_group_region
 
   metric_namespace = var.metric_namespace
   metric_value     = "1"
