@@ -41,7 +41,7 @@ console-signin-without-mfa-count:
   metric_namespace: "CISBenchmark"
   alarm_description: "Alarms when a user logs into the console without MFA."
   metric_value: "1"
-  alarm_name: "SignedToConsoleWithoutMFA"
+  alarm_name: "SignedIntoConsoleWithoutMFA"
   alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
   alarm_evaluation_periods: "1"
   alarm_period: "86400"
