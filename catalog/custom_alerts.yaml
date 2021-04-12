@@ -1,5 +1,8 @@
 ec2-instance-event-count:
   metric_name: "EC2InstanceEventCount"
+  filter_pattern:
+    "{ ($.eventName = RunInstances) || ($.eventName = RebootInstances) || ($.eventName = StartInstances) || ($.eventName
+    = StopInstances) || ($.eventName = TerminateInstances) }"
   metric_namespace: "CISBenchmark"
   alarm_description: "Alarms when an API call is made to create, terminate, start, stop or reboot an EC2 instance."
   metric_value: "1"
@@ -13,8 +16,14 @@ ec2-instance-event-count:
 
 ec2-large-instance-event-count:
   metric_name: "EC2LargeInstanceEventCount"
+  filter_pattern:
+    "{ ($.eventName = RunInstances) && (($.requestParameters.instanceType = *.8xlarge) ||
+    ($.requestParameters.instanceType = *.4xlarge) || ($.requestParameters.instanceType = *.16xlarge) ||
+    ($.requestParameters.instanceType = *.10xlarge) || ($.requestParameters.instanceType = *.12xlarge) ||
+    ($.requestParameters.instanceType = *.24xlarge)) }"
   metric_namespace: "CISBenchmark"
-  alarm_description: "Alarms when an API call is made to create, terminate, start, stop or reboot a 4x-large or greater EC2 instance."
+  alarm_description:
+    "Alarms when an API call is made to create, terminate, start, stop or reboot a 4x-large or greater EC2 instance."
   metric_value: "1"
   alarm_name: "EC2LargeInstanceEventCountExceeded"
   alarm_comparison_operator: "GreaterThanOrEqualToThreshold"
