@@ -37,7 +37,7 @@ authorization-failure-count:
 # 3.2 – Ensure a log metric filter and alarm exist for AWS Management Console sign-in without MFA
 console-signin-without-mfa-count:
   metric_name: "ConsoleSignInWithoutMfaCount"
-  filter_pattern: '{ ($.eventName = "ConsoleLogin") && ($.additionalEventData.MFAUsed != "Yes") }'
+  filter_pattern: '{($.eventName="ConsoleLogin") && ($.additionalEventData.MFAUsed !="Yes")}'
   metric_namespace: "CISBenchmark"
   alarm_description: "Alarms when a user logs into the console without MFA."
   metric_value: "1"
@@ -53,8 +53,12 @@ console-signin-without-mfa-count:
 iam-policy-event-count:
   metric_name: "IAMPolicyEventCount"
   filter_pattern:
-    "{ ($.eventName = DeleteGroupPolicy) || ($.eventName = DeleteRolePolicy)
-    ||($.eventName=DeleteUserPolicy)||($.eventName=PutGroupPolicy)||($.eventName=PutRolePolicy)||($.eventName=PutUserPolicy)||($.eventName=CreatePolicy)||($.eventName=DeletePolicy)||($.eventName=CreatePolicyVersion)||($.eventName=DeletePolicyVersion)||($.eventName=AttachRolePolicy)||($.eventName=DetachRolePolicy)||($.eventName=AttachUserPolicy)||($.eventName=DetachUserPolicy)||($.eventName=AttachGroupPolicy)||($.eventName=DetachGroupPolicy)}"
+    "{($.eventName=DeleteGroupPolicy) || ($.eventName=DeleteRolePolicy) || ($.eventName=DeleteUserPolicy) ||
+    ($.eventName=PutGroupPolicy) || ($.eventName=PutRolePolicy) || ($.eventName=PutUserPolicy) ||
+    ($.eventName=CreatePolicy) || ($.eventName=DeletePolicy) || ($.eventName=CreatePolicyVersion) ||
+    ($.eventName=DeletePolicyVersion) || ($.eventName=AttachRolePolicy) || ($.eventName=DetachRolePolicy) ||
+    ($.eventName=AttachUserPolicy) || ($.eventName=DetachUserPolicy) || ($.eventName=AttachGroupPolicy) ||
+    ($.eventName=DetachGroupPolicy)}"
   metric_namespace: "CISBenchmark"
   alarm_description: "Alarms when an API call is made to change an IAM policy."
   alarm_threshold: "3"
@@ -70,8 +74,8 @@ iam-policy-event-count:
 cloud-trail-event-count:
   metric_name: "CloudTrailEventCount"
   filter_pattern:
-    "{ ($.eventName = CreateTrail) || ($.eventName = UpdateTrail) || ($.eventName = DeleteTrail) || ($.eventName =
-    StartLogging) || ($.eventName = StopLogging) }"
+    "{($.eventName=CreateTrail) || ($.eventName=UpdateTrail) || ($.eventName=DeleteTrail) || ($.eventName=StartLogging)
+    || ($.eventName=StopLogging)}"
   metric_namespace: "CISBenchmark"
   alarm_description:
     "Alarms when an API call is made to create, update or delete a .cloudtrail. trail, or to start or stop logging to a
@@ -88,7 +92,7 @@ cloud-trail-event-count:
 #3.6 – Ensure a log metric filter and alarm exist for AWS Management Console authentication failures
 console-sign-in-failure-count:
   metric_name: "ConsoleSignInFailureCount"
-  filter_pattern: '{ ($.eventName = ConsoleLogin) && ($.errorMessage = "Failed authentication") }'
+  filter_pattern: '{($.eventName=ConsoleLogin) && ($.errorMessage="Failed authentication")}'
   metric_namespace: "CISBenchmark"
   alarm_name: "UnauthenticatedApiCallForConsoleLogin"
   alarm_description: "Alarms when an unauthenticated API call is made to sign into the console."
@@ -104,7 +108,7 @@ console-sign-in-failure-count:
 kms-key-pending-deletion-error-count:
   metric_name: "KMSKeyPendingDeletionErrorCount"
   filter_pattern:
-    "{($.eventSource = kms.amazonaws.com) && (($.eventName=DisableKey)||($.eventName=ScheduleKeyDeletion))}"
+    "{($.eventSource=kms.amazonaws.com) && (($.eventName=DisableKey) || ($.eventName=ScheduleKeyDeletion))}"
   metric_namespace: "CISBenchmark"
   alarm_description: "Alarms when a customer created KMS key is pending deletion."
   metric_value: "1"
@@ -120,10 +124,10 @@ kms-key-pending-deletion-error-count:
 s3-bucket-policy-event-count:
   metric_name: "S3BucketPolicyEventCount"
   filter_pattern:
-    "{ ($.eventSource = s3.amazonaws.com) && (($.eventName = PutBucketAcl) || ($.eventName = PutBucketPolicy) ||
-    ($.eventName = PutBucketCors) || ($.eventName = PutBucketLifecycle) || ($.eventName = PutBucketReplication) ||
-    ($.eventName = DeleteBucketPolicy) || ($.eventName = DeleteBucketCors) || ($.eventName = DeleteBucketLifecycle) ||
-    ($.eventName = DeleteBucketReplication)) }"
+    "{($.eventSource=s3.amazonaws.com) && (($.eventName=PutBucketAcl) || ($.eventName=PutBucketPolicy) ||
+    ($.eventName=PutBucketCors) || ($.eventName=PutBucketLifecycle) || ($.eventName=PutBucketReplication) ||
+    ($.eventName=DeleteBucketPolicy) || ($.eventName=DeleteBucketCors) || ($.eventName=DeleteBucketLifecycle) ||
+    ($.eventName=DeleteBucketReplication))}"
   metric_namespace: "CISBenchmark"
   alarm_description:
     "Alarms when an API call is made to S3 to put or delete a Bucket Lifecycle Policy, Bucket Policy or Bucket ACL."
