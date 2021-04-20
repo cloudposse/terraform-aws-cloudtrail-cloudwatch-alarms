@@ -193,9 +193,9 @@ network-acl-event-count:
 gateway-event-count:
   metric_name: "GatewayEventCount"
   filter_pattern:
-    "{ ($.eventName = CreateCustomerGateway) || ($.eventName = DeleteCustomerGateway) || ($.eventName =
-    AttachInternetGateway) || ($.eventName = CreateInternetGateway) || ($.eventName = DeleteInternetGateway) ||
-    ($.eventName = DetachInternetGateway) }"
+    "{($.eventName=CreateCustomerGateway) || ($.eventName=DeleteCustomerGateway) || ($.eventName=AttachInternetGateway)
+    || ($.eventName=CreateInternetGateway) || ($.eventName=DeleteInternetGateway) ||
+    ($.eventName=DetachInternetGateway)}"
   metric_namespace: "CISBenchmark"
   alarm_description: "Alarms when an API call is made to create, update or delete a Customer or Internet Gateway."
   metric_value: "1"
