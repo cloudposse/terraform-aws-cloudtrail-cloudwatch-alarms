@@ -1,3 +1,4 @@
+
 <!-- markdownlint-disable -->
 # terraform-aws-cloudtrail-cloudwatch-alarms
 
@@ -33,7 +34,6 @@ Terraform module for creating alarms for tracking important changes and occuranc
 
 This module creates a set of filter metrics and alarms based on the security best practices covered in the [AWS CIS Foundations Benchmark](https://d0.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf) guide.
 
-
 ---
 
 This project is part of our comprehensive ["SweetOps"](https://cpco.io/sweetops) approach towards DevOps.
@@ -58,7 +58,6 @@ It's 100% Open Source and licensed under the [APACHE2](LICENSE).
 
 
 We literally have [*hundreds of terraform modules*][terraform_modules] that are Open Source and well-maintained. Check them out!
-
 
 
 
