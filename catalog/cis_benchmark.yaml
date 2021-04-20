@@ -157,9 +157,9 @@ aws-config-change-count:
 security-group-event-count:
   metric_name: "SecurityGroupEventCount"
   filter_pattern:
-    "{ ($.eventName = AuthorizeSecurityGroupIngress) || ($.eventName = AuthorizeSecurityGroupEgress) || ($.eventName =
-    RevokeSecurityGroupIngress) || ($.eventName = RevokeSecurityGroupEgress) || ($.eventName = CreateSecurityGroup) ||
-    ($.eventName = DeleteSecurityGroup) }"
+    "{($.eventName=AuthorizeSecurityGroupIngress) || ($.eventName=AuthorizeSecurityGroupEgress) ||
+    ($.eventName=RevokeSecurityGroupIngress) || ($.eventName=RevokeSecurityGroupEgress) ||
+    ($.eventName=CreateSecurityGroup) || ($.eventName=DeleteSecurityGroup)}"
   metric_namespace: "CISBenchmark"
   alarm_description: "Alarms when an API call is made to create, update or delete a Security Group."
   metric_value: "1"
