@@ -175,9 +175,9 @@ security-group-event-count:
 network-acl-event-count:
   metric_name: "NetworkAclEventCount"
   filter_pattern:
-    "{ ($.eventName = CreateNetworkAcl) || ($.eventName = CreateNetworkAclEntry) || ($.eventName = DeleteNetworkAcl) ||
-    ($.eventName = DeleteNetworkAclEntry) || ($.eventName = ReplaceNetworkAclEntry) || ($.eventName =
-    ReplaceNetworkAclAssociation) }"
+    "{($.eventName=CreateNetworkAcl) || ($.eventName=CreateNetworkAclEntry) || ($.eventName=DeleteNetworkAcl) ||
+    ($.eventName=DeleteNetworkAclEntry) || ($.eventName=ReplaceNetworkAclEntry) ||
+    ($.eventName=ReplaceNetworkAclAssociation)}"
   metric_namespace: "CISBenchmark"
   alarm_description: "Alarms when an API call is made to create, update or delete a Network ACL."
   metric_value: "1"
