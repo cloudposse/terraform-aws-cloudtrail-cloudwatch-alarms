@@ -229,11 +229,11 @@ route-table-changes-count:
 vpc-event-count:
   metric_name: "VpcEventCount"
   filter_pattern:
-    "{ ($.eventName = CreateVpc) || ($.eventName = DeleteVpc) || ($.eventName = ModifyVpcAttribute) || ($.eventName =
-    AcceptVpcPeeringConnection) || ($.eventName = CreateVpcPeeringConnection) || ($.eventName =
-    DeleteVpcPeeringConnection) || ($.eventName = RejectVpcPeeringConnection) || ($.eventName = AttachClassicLinkVpc) ||
-    ($.eventName = DetachClassicLinkVpc) || ($.eventName = DisableVpcClassicLink) || ($.eventName =
-    EnableVpcClassicLink) }"
+    "{($.eventName=CreateVpc) || ($.eventName=DeleteVpc) || ($.eventName=ModifyVpcAttribute) ||
+    ($.eventName=AcceptVpcPeeringConnection) || ($.eventName=CreateVpcPeeringConnection) ||
+    ($.eventName=DeleteVpcPeeringConnection) || ($.eventName=RejectVpcPeeringConnection) ||
+    ($.eventName=AttachClassicLinkVpc) || ($.eventName=DetachClassicLinkVpc) || ($.eventName=DisableVpcClassicLink) ||
+    ($.eventName=EnableVpcClassicLink)}"
   metric_namespace: "CISBenchmark"
   alarm_description:
     "Alarms when an API call is made to create, update or delete a VPC, VPC peering connection or VPC connection to
