@@ -211,9 +211,9 @@ gateway-event-count:
 route-table-changes-count:
   metric_name: "RouteTableChangesCount"
   filter_pattern:
-    "{ ($.eventName = CreateRoute) || ($.eventName = CreateRouteTable) || ($.eventName = ReplaceRoute) || ($.eventName =
-    ReplaceRouteTableAssociation) || ($.eventName = DeleteRouteTable) || ($.eventName = DeleteRoute) || ($.eventName =
-    DisassociateRouteTable) }"
+    "{($.eventName=CreateRoute) || ($.eventName=CreateRouteTable) || ($.eventName=ReplaceRoute) ||
+    ($.eventName=ReplaceRouteTableAssociation) || ($.eventName=DeleteRouteTable) || ($.eventName=DeleteRoute) ||
+    ($.eventName=DisassociateRouteTable)}"
   metric_namespace: "CISBenchmark"
   alarm_description: "Alarms when route table changes are detected."
   metric_value: "1"
