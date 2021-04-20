@@ -140,8 +140,8 @@ s3-bucket-policy-event-count:
 aws-config-change-count:
   metric_name: "AWSConfigChangeCount"
   filter_pattern:
-    "{($.eventSource = config.amazonaws.com) &&
-    (($.eventName=StopConfigurationRecorder)||($.eventName=DeleteDeliveryChannel)||($.eventName=PutDeliveryChannel)||($.eventName=PutConfigurationRecorder))}"
+    "{($.eventSource=config.amazonaws.com) && (($.eventName=StopConfigurationRecorder) ||
+    ($.eventName=DeleteDeliveryChannel) || ($.eventName=PutDeliveryChannel) || ($.eventName=PutConfigurationRecorder))}"
   metric_namespace: "CISBenchmark"
   alarm_name: "AWSConfigConfigurationModified"
   alarm_description: "Alarms when AWS Config changes."
