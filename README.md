@@ -1,3 +1,4 @@
+
 <!-- markdownlint-disable -->
 # terraform-aws-cloudtrail-cloudwatch-alarms
 
@@ -33,7 +34,6 @@ Terraform module for creating alarms for tracking important changes and occuranc
 
 This module creates a set of filter metrics and alarms based on the security best practices covered in the [AWS CIS Foundations Benchmark](https://d0.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf) guide.
 
-
 ---
 
 This project is part of our comprehensive ["SweetOps"](https://cpco.io/sweetops) approach towards DevOps.
@@ -58,7 +58,6 @@ It's 100% Open Source and licensed under the [APACHE2](LICENSE).
 
 
 We literally have [*hundreds of terraform modules*][terraform_modules] that are Open Source and well-maintained. Check them out!
-
 
 
 
@@ -173,6 +172,7 @@ Here's a complete [example](examples/complete/main.tf) of using this `terraform-
 |------|-------------|------|---------|:--------:|
 | <a name="input_additional_endpoint_arns"></a> [additional\_endpoint\_arns](#input\_additional\_endpoint\_arns) | Any alert endpoints, such as autoscaling, or app scaling endpoint arns that will respond to an alert | `list(string)` | `[]` | no |
 | <a name="input_additional_tag_map"></a> [additional\_tag\_map](#input\_additional\_tag\_map) | Additional tags for appending to tags\_as\_list\_of\_maps. Not added to `tags`. | `map(string)` | `{}` | no |
+| <a name="input_alarm_suffix"></a> [alarm\_suffix](#input\_alarm\_suffix) | Alarm name suffix. Set to `null` to avoid adding a suffix. | `string` | `null` | no |
 | <a name="input_attributes"></a> [attributes](#input\_attributes) | Additional attributes (e.g. `1`) | `list(string)` | `[]` | no |
 | <a name="input_context"></a> [context](#input\_context) | Single object for setting entire context at once.<br>See description of individual variables for details.<br>Leave string and numeric variables as `null` to use default value.<br>Individual variable settings (non-null) override settings in context object,<br>except for attributes, tags, and additional\_tag\_map, which are merged. | `any` | <pre>{<br>  "additional_tag_map": {},<br>  "attributes": [],<br>  "delimiter": null,<br>  "enabled": true,<br>  "environment": null,<br>  "id_length_limit": null,<br>  "label_key_case": null,<br>  "label_order": [],<br>  "label_value_case": null,<br>  "name": null,<br>  "namespace": null,<br>  "regex_replace_chars": null,<br>  "stage": null,<br>  "tags": {}<br>}</pre> | no |
 | <a name="input_dashboard_enabled"></a> [dashboard\_enabled](#input\_dashboard\_enabled) | When true a dashboard that displays the statistics as a line graph will be created in CloudWatch | `bool` | `true` | no |
@@ -248,6 +248,7 @@ Like this project? Please give it a ★ on [our GitHub](https://github.com/cloud
 Are you using this project or any of our other projects? Consider [leaving a testimonial][testimonial]. =)
 
 
+
 ## Related Projects
 
 Check out these related projects.
@@ -263,8 +264,6 @@ Check out these related projects.
 - [terraform-aws-lambda-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-lambda-cloudwatch-sns-alarms) - Terraform module for creating a set of Lambda alarms and outputting to an endpoint
 - [terraform-aws-rds-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-rds-cloudwatch-sns-alarms) - Terraform module that configures important RDS alerts using CloudWatch and sends them to an SNS topic
 - [terraform-aws-sqs-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-sqs-cloudwatch-sns-alarms) - Terraform module for creating alarms for SQS and notifying endpoints
-
-
 
 ## Help
 
