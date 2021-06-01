@@ -66,6 +66,6 @@ variable "metrics" {
 
 variable "alarm_suffix" {
   type        = string
-  description = "Alarm name suffix. Set to `null` to avoid adding a suffix.
+  description = "Alarm name suffix. Set to `null` to avoid adding a suffix."
   default     = null
 }
