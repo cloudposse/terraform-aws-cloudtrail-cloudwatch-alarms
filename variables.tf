@@ -63,3 +63,9 @@ variable "metrics" {
   default     = {}
   description = "The cloudwatch metrics and corresponding alarm definitions"
 }
+
+variable "alarm_suffix" {
+  type        = string
+  description = "Alarm name suffix. Set to `null` to avoid adding a suffix."
+  default     = null
+}
