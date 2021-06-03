@@ -15,8 +15,7 @@ locals {
 
 resource "aws_cloudwatch_log_metric_filter" "default" {
   for_each       = module.this.enabled ? var.metrics : {}
-  name           = each.value.metric_name
-  metric_name    = var.alarm_suffix != null ? join("-", tolist([each.value.metric_name, var.alarm_suffix])) : each.value.metric_name
+  name           = var.alarm_suffix != null ? join("-", tolist([each.value.metric_name, var.alarm_suffix])) : each.value.metric_name
   pattern        = each.value.filter_pattern
   log_group_name = var.log_group_name
 
