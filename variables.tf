@@ -41,8 +41,13 @@ variable "dashboard_enabled" {
 
 variable "kms_master_key_id" {
   type        = string
-  description = "The ID of an AWS-managed customer master key (CMK) for Amazon SNS or a custom CMK"
-  default     = "alias/aws/sns"
+  description = <<EOT
+  The ID or alias of the customer master key (CMK) to use for encrypting the Amazon SNS topic.
+  The CMK must have its resource-based policy allow the service `cloudwatch.amazonaws.com` to perform `kms:Decrypt` and `kms:GenerateDataKey` on it.
+  If this variable is not supplied, a CMK with the sufficient resource-based policy will be created and used when configuring encryption for
+  the SNS topic.
+  EOT
+  default     = null
 }
 
 variable "metrics" {
