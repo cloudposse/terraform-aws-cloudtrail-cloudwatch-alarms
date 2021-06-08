@@ -5,7 +5,7 @@ module "sns_kms_key_label" {
   version = "0.24.1"
   count   = local.create_kms_key ? 1 : 0
 
-  attributes = ["sns-kms-key"]
+  attributes = ["sns"]
   context    = module.this.context
 }
 
