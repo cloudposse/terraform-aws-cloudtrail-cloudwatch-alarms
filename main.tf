@@ -3,6 +3,7 @@ data "aws_caller_identity" "default" {}
 module "sns_kms_key_label" {
   source  = "cloudposse/label/null"
   version = "0.24.1"
+  count   = local.create_kms_key ? 1 : 0
 
   attributes = ["sns-kms-key"]
   context    = module.this.context
@@ -11,18 +12,19 @@ module "sns_kms_key_label" {
 module "sns_kms_key" {
   source  = "cloudposse/kms-key/aws"
   version = "0.10.0"
+  count   = local.create_kms_key ? 1 : 0
 
-  name                = module.sns_kms_key_label.id
+  name                = local.create_kms_key ? module.sns_kms_key_label[0].id : ""
   description         = "KMS key for the ${local.alert_for} SNS topic"
   enable_key_rotation = true
   alias               = "alias/${local.alert_for}-sns"
-  policy              = local.enabled ? data.aws_iam_policy_document.sns_kms_key_policy[0].json : ""
+  policy              = local.create_kms_key ? data.aws_iam_policy_document.sns_kms_key_policy[0].json : ""
 
   context = module.this.context
 }
 
 data "aws_iam_policy_document" "sns_kms_key_policy" {
-  count = local.enabled ? 1 : 0
+  count = local.create_kms_key ? 1 : 0
 
   policy_id = "CloudWatchEncryptUsingKey"
 
@@ -58,7 +60,7 @@ resource "aws_sns_topic" "default" {
   count             = local.enabled ? 1 : 0
   name              = join(module.this.delimiter, [local.alert_for, "threshold", "alerts"])
   tags              = module.this.tags
-  kms_master_key_id = module.sns_kms_key.key_id
+  kms_master_key_id = local.create_kms_key ? module.sns_kms_key[0].key_id : var.kms_master_key_id
 }
 
 resource "aws_sns_topic_policy" "default" {
@@ -122,5 +124,6 @@ data "aws_iam_policy_document" "sns_topic_policy" {
 
 locals {
   enabled            = module.this.enabled
+  create_kms_key     = local.enabled && var.kms_master_key_id == null
   metric_alarms_arns = [for i in aws_cloudwatch_metric_alarm.default : i.arn]
 }
