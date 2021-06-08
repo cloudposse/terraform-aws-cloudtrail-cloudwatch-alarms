@@ -1,14 +1,68 @@
 data "aws_caller_identity" "default" {}
 
+module "sns_kms_key_label" {
+  source  = "cloudposse/label/null"
+  version = "0.24.1"
+
+  attributes = ["sns-kms-key"]
+  context    = module.this.context
+}
+
+module "sns_kms_key" {
+  source  = "cloudposse/kms-key/aws"
+  version = "0.10.0"
+
+  name                = module.sns_kms_key_label.id
+  description         = "KMS key for the ${local.alert_for} SNS topic"
+  enable_key_rotation = true
+  alias               = "alias/${local.alert_for}-sns"
+  policy              = local.enabled ? data.aws_iam_policy_document.sns_kms_key_policy[0].json : ""
+
+  context = module.this.context
+}
+
+data "aws_iam_policy_document" "sns_kms_key_policy" {
+  count = local.enabled ? 1 : 0
+
+  policy_id = "CloudWatchEncryptUsingKey"
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:*"
+    ]
+    resources = ["*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.default.account_id}:root"]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:Decrypt",
+      "kms:GenerateDataKey"
+    ]
+    resources = ["*"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudwatch.amazonaws.com"]
+    }
+  }
+}
+
 resource "aws_sns_topic" "default" {
-  count             = module.this.enabled ? 1 : 0
+  count             = local.enabled ? 1 : 0
   name              = join(module.this.delimiter, [local.alert_for, "threshold", "alerts"])
   tags              = module.this.tags
-  kms_master_key_id = var.kms_master_key_id
+  kms_master_key_id = module.sns_kms_key.key_id
 }
 
 resource "aws_sns_topic_policy" "default" {
-  count  = module.this.enabled == true && var.sns_policy_enabled == true ? 1 : 0
+  count  = local.enabled == true && var.sns_policy_enabled == true ? 1 : 0
   arn    = local.sns_topic_arn
   policy = data.aws_iam_policy_document.sns_topic_policy.json
 }
@@ -67,5 +121,6 @@ data "aws_iam_policy_document" "sns_topic_policy" {
 }
 
 locals {
+  enabled            = module.this.enabled
   metric_alarms_arns = [for i in aws_cloudwatch_metric_alarm.default : i.arn]
 }

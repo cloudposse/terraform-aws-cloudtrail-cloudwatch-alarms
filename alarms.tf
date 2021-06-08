@@ -14,7 +14,7 @@ locals {
 }
 
 resource "aws_cloudwatch_log_metric_filter" "default" {
-  for_each       = module.this.enabled ? var.metrics : {}
+  for_each       = local.enabled ? var.metrics : {}
   name           = each.value.metric_name
   pattern        = each.value.filter_pattern
   log_group_name = var.log_group_name
@@ -27,7 +27,7 @@ resource "aws_cloudwatch_log_metric_filter" "default" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "default" {
-  for_each            = module.this.enabled ? var.metrics : {}
+  for_each            = local.enabled ? var.metrics : {}
   alarm_name          = each.value.alarm_name
   comparison_operator = each.value.alarm_comparison_operator
   evaluation_periods  = each.value.alarm_evaluation_periods
@@ -43,7 +43,7 @@ resource "aws_cloudwatch_metric_alarm" "default" {
 }
 
 resource "aws_cloudwatch_dashboard" "combined" {
-  count          = module.this.enabled && var.dashboard_enabled ? 1 : 0
+  count          = local.enabled && var.dashboard_enabled ? 1 : 0
   dashboard_name = join(module.this.delimiter, ["cis", "benchmark", "statistics", "combined"])
   # https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html#CloudWatch-Dashboard-Properties-Metrics-Array-Format
   dashboard_body = jsonencode({
@@ -77,7 +77,7 @@ locals {
 }
 
 resource "aws_cloudwatch_dashboard" "individual" {
-  count          = module.this.enabled && var.dashboard_enabled ? 1 : 0
+  count          = local.enabled && var.dashboard_enabled ? 1 : 0
   dashboard_name = join(module.this.delimiter, ["cis", "benchmark", "statistics", "individual"])
 
   dashboard_body = jsonencode({

@@ -39,12 +39,6 @@ variable "dashboard_enabled" {
   type        = bool
 }
 
-variable "kms_master_key_id" {
-  type        = string
-  description = "The ID of an AWS-managed customer master key (CMK) for Amazon SNS or a custom CMK"
-  default     = "alias/aws/sns"
-}
-
 variable "metrics" {
   type = map(object({
     metric_name               = string
