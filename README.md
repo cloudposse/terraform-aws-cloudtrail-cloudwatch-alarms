@@ -149,6 +149,7 @@ Here's a complete [example](examples/complete/main.tf) of using this `terraform-
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_aws_sns_topic_label"></a> [aws\_sns\_topic\_label](#module\_aws\_sns\_topic\_label) | cloudposse/label/null | 0.24.1 |
 | <a name="module_sns_kms_key"></a> [sns\_kms\_key](#module\_sns\_kms\_key) | cloudposse/kms-key/aws | 0.10.0 |
 | <a name="module_sns_kms_key_label"></a> [sns\_kms\_key\_label](#module\_sns\_kms\_key\_label) | cloudposse/label/null | 0.24.1 |
 | <a name="module_this"></a> [this](#module\_this) | cloudposse/label/null | 0.24.1 |
