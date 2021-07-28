@@ -56,9 +56,17 @@ data "aws_iam_policy_document" "sns_kms_key_policy" {
   }
 }
 
+module "aws_sns_topic_label" {
+  source  = "cloudposse/label/null"
+  version = "0.24.1"
+
+  attributes = ["cloudtrail-breach"]
+  context    = module.this.context
+}
+
 resource "aws_sns_topic" "default" {
   count             = local.enabled ? 1 : 0
-  name              = join(module.this.delimiter, [local.alert_for, "threshold", "alerts"])
+  name              = module.aws_sns_topic_label.id
   tags              = module.this.tags
   kms_master_key_id = local.create_kms_key ? module.sns_kms_key[0].key_id : var.kms_master_key_id
 }
