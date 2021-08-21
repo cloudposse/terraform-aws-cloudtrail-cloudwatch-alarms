@@ -2,7 +2,7 @@ data "aws_caller_identity" "default" {}
 
 module "sns_kms_key_label" {
   source  = "cloudposse/label/null"
-  version = "0.24.1"
+  version = "0.25.0"
   count   = local.create_kms_key ? 1 : 0
 
   attributes = ["sns"]
@@ -58,7 +58,7 @@ data "aws_iam_policy_document" "sns_kms_key_policy" {
 
 module "aws_sns_topic_label" {
   source  = "cloudposse/label/null"
-  version = "0.24.1"
+  version = "0.25.0"
 
   attributes = ["cloudtrail-breach"]
   context    = module.this.context
