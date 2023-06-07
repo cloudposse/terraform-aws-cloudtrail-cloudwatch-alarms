@@ -1,4 +1,3 @@
-data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
@@ -9,7 +8,6 @@ locals {
   log_group_region      = var.log_group_region == "" ? data.aws_region.current.name : var.log_group_region
 
   metric_namespace = var.metric_namespace
-  metric_value     = "1"
   metrics_index    = values(var.metrics)
 }
 
@@ -106,6 +104,6 @@ resource "aws_cloudwatch_dashboard" "individual" {
 locals {
   dashboard_url_prefix = "https://console.aws.amazon.com/cloudwatch/home?region=${local.log_group_region}#dashboards:name="
 
-  dashboard_combined_url   = join("", concat([local.dashboard_url_prefix], aws_cloudwatch_dashboard.combined.*.dashboard_name))
-  dashboard_individual_url = join("", concat([local.dashboard_url_prefix], aws_cloudwatch_dashboard.individual.*.dashboard_name))
+  dashboard_combined_url   = join("", concat([local.dashboard_url_prefix], aws_cloudwatch_dashboard.combined[*].dashboard_name))
+  dashboard_individual_url = join("", concat([local.dashboard_url_prefix], aws_cloudwatch_dashboard.individual[*].dashboard_name))
 }
