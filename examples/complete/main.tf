@@ -8,7 +8,7 @@ data "aws_caller_identity" "current" {}
 
 module "cloudtrail_s3_bucket" {
   source  = "cloudposse/cloudtrail-s3-bucket/aws"
-  version = "0.15.0"
+  version = "0.26.0"
 
   force_destroy = true
 
