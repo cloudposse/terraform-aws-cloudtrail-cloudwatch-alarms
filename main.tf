@@ -11,7 +11,7 @@ module "sns_kms_key_label" {
 
 module "sns_kms_key" {
   source  = "cloudposse/kms-key/aws"
-  version = "0.10.0"
+  version = "0.12.1"
   count   = local.create_kms_key ? 1 : 0
 
   name                = local.create_kms_key ? module.sns_kms_key_label[0].id : ""
