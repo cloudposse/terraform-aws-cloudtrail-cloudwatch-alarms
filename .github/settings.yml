@@ -1,0 +1,7 @@
+# Upstream changes from _extends are only recognized when modifications are made to this file in the default branch.
+_extends: .github
+repository:
+  name: terraform-aws-cloudtrail-cloudwatch-alarms
+  description: Terraform module for creating alarms for tracking important changes and occurrences from cloudtrail.
+  homepage: https://cloudposse.com/accelerate
+  topics: terraform, terraform-modules, cis, security-audit, cloudwatch-metrics, alarm, cloudtrail, slack, devops
