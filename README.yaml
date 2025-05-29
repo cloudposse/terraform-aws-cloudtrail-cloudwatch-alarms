@@ -25,7 +25,7 @@ badges:
     url: https://github.com/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms/commits
   - name: Slack Community
     image: https://slack.cloudposse.com/for-the-badge.svg
-    url: https://slack.cloudposse.com
+    url: https://cloudposse.com/slack
 
 # List any related terraform modules that this module may be used with or that this module depends on.
 related:
@@ -117,9 +117,6 @@ examples: |-
 
 # Other files to include in this README from the project folder
 include:
-  - "docs/terraform.md"
   - "docs/metrics.md"
   - "docs/thanks.md"
-
-# Contributors to this project
 contributors: []
