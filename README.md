@@ -3,7 +3,7 @@
 <!-- markdownlint-disable -->
 <a href="https://cpco.io/homepage"><img src="https://github.com/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms/blob/main/.github/banner.png?raw=true" alt="Project Banner"/></a><br/>
     <p align="right">
-<a href="https://github.com/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms/releases/latest"><img src="https://img.shields.io/github/release/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms.svg?style=for-the-badge" alt="Latest Release"/></a><a href="https://github.com/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms/commits"><img src="https://img.shields.io/github/last-commit/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms.svg?style=for-the-badge" alt="Last Updated"/></a><a href="https://slack.cloudposse.com"><img src="https://slack.cloudposse.com/for-the-badge.svg" alt="Slack Community"/></a></p>
+<a href="https://github.com/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms/releases/latest"><img src="https://img.shields.io/github/release/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms.svg?style=for-the-badge" alt="Latest Release"/></a><a href="https://github.com/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms/commits"><img src="https://img.shields.io/github/last-commit/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms.svg?style=for-the-badge" alt="Last Updated"/></a><a href="https://cloudposse.com/slack"><img src="https://slack.cloudposse.com/for-the-badge.svg" alt="Slack Community"/></a></p>
 <!-- markdownlint-restore -->
 
 <!--
@@ -169,6 +169,11 @@ Here's a complete [example](examples/complete/main.tf) of using this `terraform-
 | <a name="output_dashboard_individual"></a> [dashboard\_individual](#output\_dashboard\_individual) | URL to CloudWatch Individual Metric Dashboard |
 | <a name="output_sns_topic_arn"></a> [sns\_topic\_arn](#output\_sns\_topic\_arn) | The ARN of the SNS topic used |
 <!-- markdownlint-restore -->
+
+
+
+
+
 ## Metrics Tracked
 
 |  Alarm's Name |  Description       |
