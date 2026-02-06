@@ -1,0 +1,22 @@
+name: Unified Flow
+
+on:
+  pull_request:
+    types: [opened]
+  push:
+
+jobs:
+  uf:
+    name: UF
+    uses: getgoing/unified-flow/.github/workflows/spec-primary.yaml@v1.0
+    with:
+      config: |-
+        shell=/bin/sh
+        subtype=generic
+      # language=json
+      validation_commands: >-
+        {
+          "use predefined": {
+            "include": "terraform"
+          }
+        }
